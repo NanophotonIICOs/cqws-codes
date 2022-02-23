@@ -6,14 +6,14 @@
 
 
 <p align="center">
-  <img width="600" height="385" src="Real_Space/WF_Example.pdf">
+  <img width="600" height="385" src="/Real_Space/WF_Example.pdf">
 <\p>
 
 
 * Or find the dispersion E-k for a specific in-plane direction.
 
 <p align="center">
-  <img width="600" height="385" src="Real_Space/Dispersion_Example.pdf">
+  <img width="600" height="385" src="/Real_Space/Dispersion_Example.pdf">
 </p>
 
 * For more details check Example Notebook.
