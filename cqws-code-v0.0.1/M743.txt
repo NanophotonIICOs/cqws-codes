@@ -1,0 +1,12 @@
+Name	M743	0	0	0	 
+barr1	AlGaAs	0.20	300	1	
+qw1	GaAs	0	11.87	0
+barr2	AlGaAs	0.20	1.98	1
+qw2	GaAs	0	11.87	0
+barr2	AlGaAs	0.20	300	1
+Temp	140	0	0	0		
+NoP	2500	0	0	0
+Eb	10.0	0	0	0
+Amp	5.0	0	0	0
+	
+ 

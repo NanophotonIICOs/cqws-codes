@@ -1,0 +1,12 @@
+Name	M4_3523	0	0	0	 
+barr1	AlGaAs	0.15	300	1	
+qw1	GaAs	0	11.87	0
+barr2	AlGaAs	0.15	1.98	1
+qw2	GaAs	0	11.87	0
+barr3	AlGaAs	0.15	300	1
+Temp	30.0	0	0	0		
+NoP	2500	0	0	0
+Eb	5.0	0	0	0
+Amp	5.0	0	0	0
+	
+ 

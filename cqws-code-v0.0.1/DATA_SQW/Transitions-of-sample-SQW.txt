@@ -1,0 +1,39 @@
+PROGRAM STARTS ON 2019-01-23  AT 12:33:05.224284
+THIS PROGRAM CALCULATE OPTICAL TRANSITIONS OF SAMPLE: SQW
+THE SIMPLE STRUCTURE OF THIS SAMPLE:
+
+|   <--30.00 nm-->   |  <--13.85 nm-->  |   <--30.00 nm-->   |
+|--------------------+------------------+--------------------|
+|                    |                  |                    |
+|                    |                  |                    |
+| Al(0.15)Ga(0.85)As |       GaAs       | Al(0.30)Ga(0.70)As |
+|                    |                  |                    |
+|                    |                  |                    |
+|                    |                  |                    |
+
+EMPLOYED PARAMETERS IN THIS CALCULATIONS: 
+=====================  =========
+     TEMPERATURE [K]:       30.0
+              xbarr1:       0.15
+              xbarr2:       0.30
+              xbarr3:       0.30
+         BAND OFFSET:  0.67:0.33
+EXCITON BINDING [eV]:       6.00
+=====================  =========
+
+ENERGIES:
+|  ELECTRON [eV]  |  HEAVY HOLE [eV]  |  LIGHT HOLE  [eV]  |
+|-----------------+-------------------+--------------------|
+|   E1-> 1.5359   |   HH1->-0.0030    |    LH1->-0.0146    |
+|   E2-> 1.5881   |   HH2->-0.0104    |    LH2->-0.0544    |
+
+
+TRANSITIONS:
+|  TRANSITION No.  |   ENERGY    [eV] |   WAVELENGTH  [nm] |
+|------------------+------------------+--------------------|
+|      E1-HH1      |           1.5328 |           808.5771 |
+|      E1-LH1      |           1.5445 |           802.4782 |
+|      E2-HH2      |           1.5925 |           778.2549 |
+|      E2-LH2      |           1.6365 |           757.3526 |
+
+CPU TIME (s) : 	 15.82

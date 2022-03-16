@@ -1,0 +1,12 @@
+Name	GalievPaper	0	0	0	 
+barr1	AlGaAs	0.22	30	1	
+qw1	GaAs	0	26.0	0
+barr2	AlAs	0	0	2
+qw2	GaAs	0	26.0	0
+barr2	AlGaAs	0.22	30	1
+Temp	300.0	0	0	0		
+NoP	2500	0	0	0
+Eb	0.0	0	0	0
+Amp	10.0	0	0	0
+	
+ 
