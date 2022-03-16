@@ -1,0 +1,39 @@
+PROGRAM STARTS ON 2019-11-16  AT 09:57:29.233607
+THIS PROGRAM CALCULATE OPTICAL TRANSITIONS OF SAMPLE: M4_3523
+THE SIMPLE STRUCTURE OF THIS SAMPLE:
+
+|  <--300.00 nm-->   |  <--11.87 nm-->  |   <--1.98 nm-->    |  <--11.87 nm-->  |  <--300.00 nm-->   |
+|--------------------+------------------+--------------------+------------------+--------------------|
+|                    |                  |                    |                  |                    |
+|                    |                  |                    |                  |                    |
+| Al(0.15)Ga(0.85)As |       GaAs       | Al(0.15)Ga(0.85)As |       GaAs       | Al(0.15)Ga(0.85)As |
+|                    |                  |                    |                  |                    |
+|                    |                  |                    |                  |                    |
+|                    |                  |                    |                  |                    |
+
+EMPLOYED PARAMETERS IN THIS CALCULATIONS: 
+=====================  =========
+     TEMPERATURE [K]:       30.0
+              xbarr1:       0.15
+              xbarr2:       0.15
+              xbarr3:       0.15
+         BAND OFFSET:  0.67:0.33
+EXCITON BINDING [eV]:       5.00
+=====================  =========
+
+ENERGIES:
+|  ELECTRON [eV]  |  HEAVY HOLE [eV]  |  LIGHT HOLE  [eV]  |
+|-----------------+-------------------+--------------------|
+|   E1-> 1.5334   |   HH1->-0.0035    |    LH1->-0.0105    |
+|   E2-> 1.5414   |   HH2->-0.0039    |    LH2->-0.0185    |
+
+
+TRANSITIONS:
+|  TRANSITION No.  |   ENERGY    [eV] |   WAVELENGTH  [nm] |
+|------------------+------------------+--------------------|
+|      E1-HH1      |           1.5319 |           809.0414 |
+|      E1-LH1      |           1.5390 |           805.3320 |
+|      E2-HH2      |           1.5403 |           804.6679 |
+|      E2-LH2      |           1.5549 |           797.0980 |
+
+CPU TIME (s) : 	 18.68

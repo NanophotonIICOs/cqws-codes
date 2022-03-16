@@ -1,0 +1,42 @@
+PROGRAM STARTS ON 2019-03-06  AT 16:58:33.030280
+THIS PROGRAM CALCULATE OPTICAL TRANSITIONS OF SAMPLE: M743
+THE SIMPLE STRUCTURE OF THIS SAMPLE:
+
+|  <--300.00 nm-->   |  <--11.87 nm-->  |   <--1.98 nm-->    |  <--11.87 nm-->  |  <--300.00 nm-->   |
+|--------------------+------------------+--------------------+------------------+--------------------|
+|                    |                  |                    |                  |                    |
+|                    |                  |                    |                  |                    |
+| Al(0.20)Ga(0.80)As |       GaAs       | Al(0.20)Ga(0.80)As |       GaAs       | Al(0.20)Ga(0.80)As |
+|                    |                  |                    |                  |                    |
+|                    |                  |                    |                  |                    |
+|                    |                  |                    |                  |                    |
+
+EMPLOYED PARAMETERS IN THIS CALCULATIONS: 
+=====================  =========
+     TEMPERATURE [K]:      140.0
+              xbarr1:       0.20
+              xbarr2:       0.20
+              xbarr3:       0.20
+         BAND OFFSET:  0.67:0.33
+EXCITON BINDING [eV]:      10.00
+=====================  =========
+
+ENERGIES:
+|  ELECTRON [eV]  |  HEAVY HOLE [eV]  |  LIGHT HOLE  [eV]  |
+|-----------------+-------------------+--------------------|
+|   E1-> 1.5075   |   HH1->-0.0038    |    LH1->-0.0127    |
+|   E2-> 1.5137   |   HH2->-0.0040    |    LH2->-0.0196    |
+|   E3-> 1.5678   |   HH3->-0.0150    |    LH3->-0.0552    |
+
+
+TRANSITIONS:
+|  TRANSITION No.  |   ENERGY    [eV] |   WAVELENGTH  [nm] |
+|------------------+------------------+--------------------|
+|      E1-HH1      |           1.5013 |           825.5518 |
+|      E1-LH1      |           1.5102 |           820.6688 |
+|      E2-HH2      |           1.5077 |           822.0246 |
+|      E2-LH2      |           1.5233 |           813.6157 |
+|      E3-HH3      |           1.5728 |           788.0323 |
+|      E3-LH3      |           1.6130 |           768.3817 |
+
+CPU TIME(min) :  1.10
