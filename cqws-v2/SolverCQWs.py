@@ -139,8 +139,8 @@ class StructureFrom(Structure):
         cb_meff           = np.zeros(n_max)     #conduction band effective mass to electrons
         vblh_meff         = np.zeros(n_max)     #valence band effective mass to holes
         vbhh_meff         = np.zeros(n_max)     #valence band effective mass to holes
-        CB                = np.zeros(n_max) 
-        VB                = np.zeros(n_max) 
+        cb                = np.zeros(n_max) 
+        vb                = np.zeros(n_max) 
         Eg                = np.zeros(n_max)            #bandgap energy (?)
         eps               = np.zeros(n_max)        #dielectric constant
         dop               = np.zeros(n_max)           #doping
@@ -180,28 +180,28 @@ class StructureFrom(Structure):
             x           = layer[2]
 
             if matType == 'GaAs':
-                CB[startindex:finishindex] =  (EgGaAs(T))*q #material("GaAs")(T=self.T).band_gap
-                VB[startindex:finishindex] = 0
+                cb[startindex:finishindex] =  (EgGaAs(T))*q #material("GaAs")(T=self.T).band_gap
+                vb[startindex:finishindex] = 0
                 cb_meff[startindex:finishindex]   = meGaAs*m_e
                 vblh_meff[startindex:finishindex] = mlhGaAs*m_e
                 vbhh_meff[startindex:finishindex] = mhhGaAs*m_e
             
             elif matType == 'AlAs':
-                CB[startindex:finishindex] =  (EgGaAs(T)+EgAlAs(T)*Qc)*q
-                VB[startindex:finishindex] = -(EgAlAs(T)*Qv)*q
+                cb[startindex:finishindex] =  (EgGaAs(T)+EgAlAs(T)*Qc)*q
+                vb[startindex:finishindex] = -(EgAlAs(T)*Qv)*q
                 cb_meff[startindex:finishindex]  =  meAlAs*m_e
                 vblh_meff[startindex:finishindex] = mlhAlAs*m_e
                 vbhh_meff[startindex:finishindex] = mhhAlAs*m_e
         
             elif matType == 'AlGaAs':
-                CB[startindex:finishindex] =  (EgGaAs(T)+EgAlGaAs(x,T)*Qc)*q
-                VB[startindex:finishindex] =  -(EgAlGaAs(x,T)*Qv)*q
+                cb[startindex:finishindex] =  (EgGaAs(T)+EgAlGaAs(x,T)*Qc)*q
+                vb[startindex:finishindex] =  -(EgAlGaAs(x,T)*Qv)*q
                 cb_meff[startindex:finishindex]   = meAlGaAs(x)*m_e
                 vblh_meff[startindex:finishindex] = mlhAlGaAs(x)*m_e
                 vbhh_meff[startindex:finishindex] = mhhAlGaAs(x)*m_e
             elif matType == 'Vacuum':
-                CB[startindex:finishindex] = (EgGaAs(T)+0.5)*q
-                VB[startindex:finishindex] =  -(EgGaAs(T)+0.5)*q
+                cb[startindex:finishindex] = (EgGaAs(T)+0.5)*q
+                vb[startindex:finishindex] =  -(EgGaAs(T)+0.5)*q
                 cb_meff[startindex:finishindex]   = m_e
                 vblh_meff[startindex:finishindex] = m_e
                 vbhh_meff[startindex:finishindex] = m_e
@@ -216,8 +216,8 @@ class StructureFrom(Structure):
             
             dop[startindex:finishindex] = chargedensity
         
-        self.CB         = CB
-        self.VB         = VB
+        self.cb         = cb
+        self.vb         = vb
         self.cb_meff    = cb_meff
         self.vblh_meff  = vblh_meff
         self.vbhh_meff  = vbhh_meff
@@ -295,8 +295,8 @@ def Schrodinger(model,sparse = False,absolute = False):
     subbands = model.subbands 
     xaxis    = np.arange(0,n)*dx 
     Fapp     = model.Fapp
-    pote     = model.CB + Fapp*q*xaxis
-    poth     = model.VB + Fapp*q*xaxis
+    pote     = model.cb + Fapp*q*xaxis
+    poth     = model.vb + Fapp*q*xaxis
     me       = model.cb_meff
     HHBinding = model.HHBinding
     LHBinding = model.LHBinding
@@ -316,8 +316,8 @@ def Schrodinger(model,sparse = False,absolute = False):
     Hamiltonian_hh = H(-poth,mhh,Fapp,dx,n)
     meV = 1e3
     
-    PCB = pote
-    PVB = poth
+    Pcb = pote
+    Pvb = poth
     
     
     if sparse == False:
@@ -328,8 +328,8 @@ def Schrodinger(model,sparse = False,absolute = False):
             Ee[i]    = Ene[i]/q  # eV
             Elh[i]   = Enlh[i]/q 
             Ehh[i]   = Enhh[i]/q
-            potcb    = PCB[:]/q
-            potvb    = PVB[:]/q
+            potcb    = Pcb[:]/q
+            potvb    = Pvb[:]/q
     
         # Export Wavefunctions
         if absolute == False:
@@ -387,8 +387,8 @@ def Schrodinger(model,sparse = False,absolute = False):
             Ee[i] = energy_e[i]/q  # eV
             Elh[i] = energy_lh[i]/q
             Ehh[i] = energy_hh[i]/q
-            potcb  = PCB/q
-            potvb  = PVB/q
+            potcb  = Pcb/q
+            potvb  = Pvb/q
 
         
     for i in range(subbands):
@@ -422,8 +422,8 @@ def Schrodinger(model,sparse = False,absolute = False):
     results.Elh      = Elh
     results.Psihh    = Psihh
     results.Ehh      = Ehh
-    results.CB       = potcb
-    results.VB       = potvb
+    results.cb       = potcb
+    results.vb       = potvb
     results.dx       = dx
     results.subbands = subbands
     results.TEHH     = EHH
@@ -444,8 +444,8 @@ class Solver:
         self.subbands = model.subbands 
         self.xaxis    = np.arange(0,self.n)*self.dx 
         self.Fapp     = model.Fapp
-        self.pote     = model.CB - self.Fapp*q*self.xaxis
-        self.poth     = model.VB - self.Fapp*q*self.xaxis 
+        self.pote     = model.cb - self.Fapp*q*self.xaxis
+        self.poth     = model.vb - self.Fapp*q*self.xaxis 
         self.me       = model.cb_meff
         self.mlh      = model.vblh_meff
         self.mhh      = model.vbhh_meff
@@ -471,8 +471,8 @@ class Solver:
             self.Hamiltonian_hh = Hholes(self.poth,self.mhh,self.Fapp,self.dx,self.n)
             meV = 1e3
     
-            self.PCB = self.pote
-            self.PVB = self.poth
+            self.Pcb = self.pote
+            self.Pvb = self.poth
             
             # Eigenvalues and Eigenvectors to electrons in Conduction bands
             upper_e       = np.diag(self.Hamiltonian_e,k=1)
@@ -524,8 +524,8 @@ class Solver:
                 self.Ee[i]  = self.energy_e[i]/q  # eV
                 self.Elh[i] = self.energy_lh[i]/q
                 self.Ehh[i] = self.energy_hh[i]/q
-                self.potcb  = self.PCB/q
-                self.potvb  = self.PVB/q
+                self.potcb  = self.Pcb/q
+                self.potvb  = self.Pvb/q
 
         
             for i in range(self.subbands):
@@ -573,8 +573,8 @@ class Solver:
             results.Elh      = self.Elh
             results.Psihh    = self.Psihh
             results.Ehh      = self.Ehh
-            results.CB       = self.potcb
-            results.VB       = self.potvb
+            results.cb       = self.potcb
+            results.vb       = self.potvb
             results.dx       = self.dx
             results.subbands = self.subbands
             results.TEHH     = self.EHH
@@ -629,8 +629,8 @@ class Solver:
 
             # Data
             self.subbands = results.subbands
-            self.CB   = results.CB
-            self.VB   = results.VB
+            self.cb   = results.cb
+            self.vb   = results.vb
             self.WF_e = results.Psie
             self.WF_hh= results.Psihh
             self.WF_lh= results.Psilh
@@ -645,10 +645,10 @@ class Solver:
             
             xmin = ((self.xaxis[self.n-1]/nm)/2)-axmin
             xmax = ((self.xaxis[self.n-1]/nm)/2)+axmax
-            eymin  = min(self.CB) + eymin
-            eymax  = max(self.CB) + eymax
-            hymin  = min(self.VB) + hymin
-            hymax  = max(self.VB) + hymax
+            eymin  = min(self.cb) + eymin
+            eymax  = max(self.cb) + eymax
+            hymin  = min(self.vb) + hymin
+            hymax  = max(self.vb) + hymax
             
             
             
@@ -656,7 +656,7 @@ class Solver:
             f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(7,10))
             f.subplots_adjust(hspace=0.05)
             # Plot electrons and heavy holes
-            ax1.plot(self.xaxis/nm,self.CB,ls='-',lw='2',color='gray')
+            ax1.plot(self.xaxis/nm,self.cb,ls='-',lw='2',color='gray')
             for i in range(self.subbands):
                 ax1.plot(self.xaxis/nm,amp*self.WF_e[:,i]+self.Ee[i],
                         ls='-',
@@ -664,7 +664,7 @@ class Solver:
                         color=colors[i],
                         label = '$\psi e_%d$'%(i))
             
-            ax2.plot(self.xaxis/nm,self.VB,ls='-',lw='2',color='gray')
+            ax2.plot(self.xaxis/nm,self.vb,ls='-',lw='2',color='gray')
             
             for i in range(self.subbands):
                 ax2.plot(self.xaxis/nm,amp*self.WF_hh[:,i]-self.Ehh[i],
@@ -742,8 +742,8 @@ class Solver:
 
             # Data
             self.subbands = results.subbands
-            self.CB   = results.CB
-            self.VB   = results.VB
+            self.cb   = results.cb
+            self.vb   = results.vb
             self.WF_e = results.Psie
             self.WF_hh= results.Psihh
             self.WF_lh= results.Psilh

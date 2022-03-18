@@ -497,7 +497,7 @@ for m in tqdm(range(0,N), desc = 'light-hole energies    -', ascii = False,ncols
 
 
 
-#============================= BAND TO BAND TRANSITIONS ===================================#
+#============================= BAND TO BAND TRANSITIONS ====================#
 
 ens = input('\n\nNo. Of Transition Energies (>0)?===> ')
 
@@ -543,11 +543,11 @@ for ii in range(int(ens)):
                      str('HH'+str(ii+1)+'->'+'%.4f'%-Ehh[ii+1]),
                      str('LH'+str(ii+1)+'->'+'%.4f'%-Elh[ii+1])]
 
-###############################################################################################
+##########################################################################
 #                                                                                             #
 #                                 EXPORT ENERGIEs DATA                                        #
 #                                                                                             #                          
-###############################################################################################
+#####################################################################################
 
 
 trans_file = open(newpath +'/Transitions-of-sample-%s.txt'%NSAM,'w')
@@ -588,7 +588,7 @@ trans_file.close()
 
 
 
-#==================================== EXPORT  DATA =========================================
+#================================== EXPORT  DATA ====================================
 #Para no exportar todos los datos calcular la el rango adecuado
 
 xmindata =  int((b1 -30*nm)/dx)
@@ -667,7 +667,7 @@ else :
 
 
 
-# ==================================== PLOT ================================================
+# ==================================== PLOT ==============================
 
 
 aplot = input('\nDo you want plot the wave fuctions? [Y/n] ===> ')
@@ -711,7 +711,7 @@ if (aplot == 'y') or (aplot == 'Y'):
     ax2.spines['top'].set_visible(False)
     ax.tick_params(labeltop='off')  # don't put tick labels at the top
     ax2.xaxis.tick_bottom()
-    #================================== Electron =======================================
+    #================================== Electron ==============================
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(ymine,ymaxe)
     ax.tick_params(bottom="off", labelbottom='off')
@@ -725,7 +725,7 @@ if (aplot == 'y') or (aplot == 'Y'):
     ax.tick_params(axis='x', which='minor', bottom='off')
     ax.tick_params(axis='y', length=4,which='minor', direction='in')
     ax.tick_params(axis='y', length=8,which='major', direction='in')
-    #=============================== Heavy and light holes ==============================
+    #====================== Heavy and light holes ==============================
     ax2.set_xlim(xmin,xmax)
     ax2.set_ylim(yminh,ymaxh)
     ax2.plot(x/nm,Vvb,'-k')
