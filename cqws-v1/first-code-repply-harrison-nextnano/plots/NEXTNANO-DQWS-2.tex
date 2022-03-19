@@ -1,0 +1,136 @@
+% !TeX document-id = {bc853b60-2dbb-4300-accd-3581ab2279d9}
+% !TeX TXS-program:compile = txs:///pdflatex/[--shell-escape]
+\RequirePackage{fix-cm}
+\documentclass[border=0pt]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{graphics}
+\usepackage{xcolor}
+\usepackage{pgffor} 
+\usepackage{scalerel}
+\usepackage{tikz,filecontents, pgfplots}
+\pgfplotsset{compat=1.6}
+\usepackage{pgfplotstable}
+\usetikzlibrary{arrows,
+	pgfplots.groupplots,
+	arrows.meta,
+	decorations.pathmorphing,
+	calc,%
+	decorations.pathmorphing,%
+	decorations.markings,
+	fadings,%
+	shadings,%
+	positioning,
+	spy,
+	shapes,
+	shapes.geometric,
+	shapes.arrows,
+	fit,
+	plotmarks,
+	intersections}
+
+\tikzset{
+	arrow/.style={-{Stealth[scale=1]}, line width=0.75pt},
+}
+
+% Colors
+\definecolor{c1}{rgb}{1,0,0}
+\definecolor{c2}{rgb}{.05,0.14,0.81}
+\definecolor{c3}{rgb}{.074,0.572,0.34}
+\definecolor{c4}{rgb}{.59,0.80,0.84}
+% Constants
+\def\xmin{0}
+\def\xmax{56}
+\def\ymine{1.50}
+\def\ymaxe{1.69}
+\def\yminh{-0.098}
+\def\ymaxh{0.20}
+
+%
+\def\eu{0.04912}
+\def\ed{0.05765}
+
+\begin{document}
+\begin{tikzpicture}[spy using outlines={circle,black, ultra thick,connect spies}]
+\pgfplotsset{
+	every axis/.append style = {
+		line width = 0.5pt,
+		tick style = {line width=0.5pt,black},
+		major tick length = 0.15cm,
+		minor tick length = 0.075cm,
+		%axis line style = thick,
+	}
+}
+
+
+%============================================= Plot ==========================================	
+\begin{axis}[%
+ymin=-0.02, ymax=0.25,
+xmin=-2.5,  xmax=58,
+height=6cm,
+width=7cm,
+minor x tick num=1,
+minor y tick num=1,
+ytick pos=left,
+xtick pos=left,
+ytick={-0.05,-0.00,0.05,0.10,0.15,0.20,0.25,0.30},
+xtick={-5,0,  5., 10., 15., 20., 25., 30., 35., 40., 45., 50., 55., 60.},
+yticklabel style = {font=\fontsize{6}{1}\selectfont},
+xticklabel style = {font=\fontsize{6}{1}\selectfont},
+tick label style = {font=\fontsize{6}{1}\selectfont},
+ y tick label style={
+	/pgf/number format/.cd,
+	fixed,
+	fixed zerofill,
+	precision=2
+},
+%======================================  legend ============================================
+legend style = {at={(0.015,0.98)},
+	anchor=north west,
+	nodes={inner sep=1pt},
+	cells={anchor=center},
+	draw=none, 
+	fill=none,
+	font={\fontsize{4}{1}\selectfont}, 
+	line width =0.75pt},
+legend cell align=left,
+%=========================================Labels ======================== =====================
+xlabel ={\fontsize{7}{1}\selectfont Z  [m] },
+ylabel ={\fontsize{7}{1}\selectfont  Energ\'ia [eV]},
+every axis y label/.style= {at={(axis description cs:-0.15,0.5)},rotate=90},
+every y tick scale label/.style={at={(axis description cs:-0.15,0.42)},
+	rotate=90,
+	inner sep=0pt},
+every x tick scale label/.style={at={(axis description cs:0.65,-0.15)},
+	rotate=0,
+	inner sep=0pt},
+tick scale binop = \times,
+]
+
+%===========================================Add Data ===========================================
+\pgfplotstableread[col sep=comma]{../DATA/Potential_Profile.dat}{\vp};
+\pgfplotstableread[col sep=comma]{../DATA/PSIelectron_data.dat}{\psie};
+
+
+%\addplot[mark=none, black, dashed, line width = 1pt] coordinates {(815.932,-0.002) (815.932,0.004)};
+
+%0.016503
+%=================================== Plot ======================================
+
+
+\addplot[black,line width = 0.35pt,forget plot] table[x index=0,y index=1]{\vp};
+\addplot[c1,densely dashed,line width =0.5pt] coordinates {(\xmin,\eu) (\xmax,\eu)};
+\addlegendentry[minimum height=0.25cm,yshift = -0.3mm]{e$_{\scaleto{1}{2pt}}$}
+\addplot[c2,densely dashed,line width =0.5pt] coordinates {(\xmin,\ed) (\xmax,\ed)};      
+\addlegendentry[yshift = -0.3mm]{e$_{\scaleto{2}{2pt}}$};
+\addplot[smooth,c1,line width =0.5pt] table[x index=0,y index=1]{\psie};  
+\addlegendentry[yshift = -0mm]{$\psi^{2}_{\scaleto{e}{2pt}_{\scaleto{1}{2pt}}}$};
+%\addplot[smooth,c2,line width =0.5pt] table[x index=0,y index=2]{\psie};
+%\addlegendentry{ $\psi^{2}_{\scaleto{e}{2pt}_{\scaleto{2}{2pt}}}$};
+
+\end{axis}
+
+\end{tikzpicture}
+
+\end{document}

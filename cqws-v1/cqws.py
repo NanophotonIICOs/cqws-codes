@@ -614,7 +614,7 @@ if (export == 'y') or (export == 'Y'):
             PSIlh[k-1,:] = amplitude*eigvec_lh[xmindata:xmaxdata,k]-Elh[k]
             #sleep(0.00000001)
     # POTENTIAL PROFILES
-    with open(newpath +"/Potential_Profile_%s"%NSAM + ".dat", "w") as out_file:
+    with open(newpath +"/potential_profile_%s"%NSAM + ".dat", "w") as out_file:
            for i in tqdm(range(xmindata,xmaxdata),desc = 'exp.potential  profile -', ascii = False,ncols = cols):
                out_string = ""
                out_string += str(x[i]/nm)
@@ -623,7 +623,7 @@ if (export == 'y') or (export == 'Y'):
                out_string += "\n"
                out_file.write(out_string)
     # Wave Function electron
-    with open(newpath +"/PSIelectron_data_%s"%NSAM + ".dat", "w") as out_file:
+    with open(newpath +"/psielectron_data_%s"%NSAM + ".dat", "w") as out_file:
         for i in tqdm(range(ran),desc = 'exp.electron   wavefun -', ascii = False,ncols = cols):
             out_string = ""
             out_string += str(x[xmindata+i]/nm)
@@ -632,7 +632,7 @@ if (export == 'y') or (export == 'Y'):
             out_string += "\n"
             out_file.write(out_string)
     # Wave Function heavy hole
-    with open(newpath +"/PSIheavyhole_data_%s"%NSAM + ".dat", "w") as out_file:
+    with open(newpath +"/psiheavyhole_data_%s"%NSAM + ".dat", "w") as out_file:
         for i in tqdm(range(ran),desc = 'exp.heavy-hole wavefun -', ascii = False,ncols = cols):
             out_string = ""
             out_string += str(x[xmindata+i]/nm)
@@ -641,7 +641,7 @@ if (export == 'y') or (export == 'Y'):
             out_string += "\n"
             out_file.write(out_string)
     # Wave Function light hole
-    with open(newpath +"/PSIlighthole_data_%s"%NSAM + ".dat", "w") as out_file:
+    with open(newpath +"/psilighthole_data_%s"%NSAM + ".dat", "w") as out_file:
         for i in tqdm(range(ran),desc = 'exp.light-hole wavefun -', ascii = False,ncols = cols):
             out_string = ""
             out_string += str(x[xmindata+i]/nm)
