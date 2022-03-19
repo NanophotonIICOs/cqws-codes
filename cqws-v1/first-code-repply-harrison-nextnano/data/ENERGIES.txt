@@ -1,0 +1,28 @@
+PROGRAM STARTS ON 2022-03-19  AT 16:18:47.395313
+THIS PROGRAM CALCULATE OPTICAL TRANSITIONS OF SAMPLE: QWS-HARRISON-NEXTNANO
+EMPLOYED PARAMETERS IN THIS CALCULATIONS: 
+---------------  ---------
+TEMPERATURE(K):        300
+  x COMPOSITION        0.2
+    BAND OFFSET  0.67:0.33
+---------------  ---------
+
+ SAMPLE STRUCTURE: 
+|  Al(0.20)Ga(0.80)As  |   GaAs   |  Al(0.20)Ga(0.80)As  |   GaAs   |  Al(0.20)Ga(0.80)As  |
+|:--------------------:|:--------:|:--------------------:|:--------:|:--------------------:|
+|                      |          |                      |          |                      |
+|                      |          |                      |          |                      |
+|      20.000 nm       | 6.000 nm |       4.000 nm       | 6.000 nm |       4.000 nm       |
+|                      |          |                      |          |                      |
+|                      |          |                      |          |                      |
+|                      |          |                      |          |                      |
+
+
+ ELECTRON ENERGIES:
+|  # STATE  |      eV |
+|:---------:|--------:|
+|    E1     | 0.04915 |
+|    E2     | 0.05772 |
+
+
+CPU TIME (s) : 	 3.98
