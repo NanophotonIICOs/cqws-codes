@@ -730,13 +730,17 @@ class Solver:
 
     def save_data(self,results,**kwargs):
         nx,ny =results.psie.shape
+        bands = np.zeros((nx,3))
         psie = np.zeros((nx,ny+1))
         psihh = np.zeros((nx,ny+1))
         psilh = np.zeros((nx,ny+1))
+        bands[:,0]=results.xaxis/nm
         psie[:,0]=results.xaxis/nm
         psihh[:,0]=results.xaxis/nm
         psilh[:,0]=results.xaxis/nm
         
+        bands[:,1]=results.cb
+        bands[:,2]=results.vb
 
         for key, value in kwargs.items():
             if key=='absolute':
@@ -748,7 +752,7 @@ class Solver:
             psilh[:,1+i]=results.psilh[:,i] - results.Ehh[i]
             psihh[:,1+i]=results.psihh[:,i] - results.Elh[i]
 
-        
+        np.savetxt(save_path+'/'+self.structure_name+'-band-edge.txt',bands,delimiter=',')
         np.savetxt(save_path+'/'+self.structure_name+'-wf-e.txt',psie,delimiter=',')
         np.savetxt(save_path+'/'+self.structure_name+'-wf-hh.txt',psihh,delimiter=',')
         np.savetxt(save_path+'/'+self.structure_name+'-wf-lh.txt',psilh,delimiter=',')
