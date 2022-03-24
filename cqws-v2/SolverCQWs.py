@@ -736,22 +736,24 @@ class Solver:
         psie[:,0]=results.xaxis/nm
         psihh[:,0]=results.xaxis/nm
         psilh[:,0]=results.xaxis/nm
-        for i in enumerate(results.subbands):
-            psie[:,1:]=results.psie +  
-            psilh[:,1:]=results.psilh
-            psihh[:,1:]=results.psihh
         
 
+        for key, value in kwargs.items():
+            if key=='absolute':
+                abs_value=value
+    
+       
+        for i in range(results.subbands):
+            psie[:,1+i] =results.psie[:,i]  + results.Ee[i]
+            psilh[:,1+i]=results.psilh[:,i] - results.Ehh[i]
+            psihh[:,1+i]=results.psihh[:,i] - results.Elh[i]
 
+        
+        np.savetxt(save_path+'/'+self.structure_name+'-wf-e.txt',psie,delimiter=',')
+        np.savetxt(save_path+'/'+self.structure_name+'-wf-hh.txt',psihh,delimiter=',')
+        np.savetxt(save_path+'/'+self.structure_name+'-wf-lh.txt',psilh,delimiter=',')
 
-        np.savetxt(save_path+'/'+self.structure_name+'-wf-electrons.txt',psie,delimiter=',')
-
-
-
-
-            
-            
-            
+      
     def plotting_subbands(self,results,symmetric = False,amp=10,axmin=0,axmax=1,eymin = 1.515,eymax=2,hymin=0,hymax=-0.1):
             plt.rcParams['xtick.labelsize']     = 13
             plt.rcParams['ytick.labelsize']     = 13
