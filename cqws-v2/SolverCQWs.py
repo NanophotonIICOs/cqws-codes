@@ -37,10 +37,22 @@ hbar = 1.054588757e-34
 m_e  = 9.1093826E-31 #kg
 pi   = np.pi
 eps0 = 8.8541878176e-12 #F/m
-
+nm=1e-9
 J2eV=1/q #Joules to eV
 eV2J=1*q #eV to Joules
 
+
+# create data files folder
+current_path=os.getcwd()
+print("Current PATH:%s"%(current_path))
+if os.path.isdir(current_path+'/data'):
+    print("The data folder already exist")
+else:
+    print("The data folder doesn't exist") 
+    os.mkdir(current_path+'/data')
+    print("The data folder was created successfully!")
+
+save_path=current_path+'/data'
 
 
 # From Aestimo
@@ -68,7 +80,7 @@ class Structure():
                   Vc,eps,dop,cb_meff, #arrays
                  **kwargs):
 
-        #value attributes        
+        #value attributes  
         self.T           = T
         self.Fapp        = Fapp
         self.N           = dx        
@@ -77,11 +89,11 @@ class Structure():
         self.dop         = dop
         self.cb_meff     = cb_meff
         self.subbands    = subbands
-        self.scheme      = scheme
-        self.HHBinding   = HHBinding
-        self.LHBinding   = LHBinding
-        self.Qc          = Qc
-        self.Qv          = Qv
+        # self.scheme      = scheme
+        # self.HHBinding   = HHBinding
+        # self.LHBinding   = LHBinding
+        # self.Qc          = Qc
+        # self.Qv          = Qv
 
         # setting any extra parameters provided with initialisation
         for key,value in kwargs.items():
@@ -99,8 +111,9 @@ class AttrDict(dict):
 class StructureFrom(Structure):
     def __init__(self,inputfile):
         if type(inputfile)==dict:
-            inputfile=AttrDict(inputfile,database)            
+            inputfile=AttrDict(inputfile)            
         # Parameters for simulation
+        self.structure_name = inputfile.structure_name  
         self.Fapp     = inputfile.Fapp
         self.T        = inputfile.T
         self.dx       = inputfile.gridfactor*1e-9 #grid in m
@@ -306,9 +319,9 @@ def Schrodinger(model,sparse = False,absolute = False):
     Ee    = np.zeros(subbands)
     Elh   = np.zeros(subbands)
     Ehh   = np.zeros(subbands)
-    Psie  = np.zeros((subbands,n))
-    Psihh = np.zeros((subbands,n))
-    Psilh = np.zeros((subbands,n))
+    psie  = np.zeros((subbands,n))
+    psihh = np.zeros((subbands,n))
+    psilh = np.zeros((subbands,n))
     EHH   = np.zeros(subbands)
     ELH   = np.zeros(subbands)
     Hamiltonian_e  = H(pote,me,Fapp,dx,n)
@@ -334,14 +347,14 @@ def Schrodinger(model,sparse = False,absolute = False):
         # Export Wavefunctions
         if absolute == False:
             for i in range(subbands):
-                Psie[i]  = WFe[:,i]
-                Psihh[i] = WFhh[:,i]
-                Psilh[i] = WFlh[:,i]
+                psie[i]  = WFe[:,i]
+                psihh[i] = WFhh[:,i]
+                psilh[i] = WFlh[:,i]
         else:
             for i in range(subbands):
-                Psie[i]  = np.power(np.absolute(WFe[:,i]),2)
-                Psihh[i] = np.power(np.absolute(WFhh[:,i]),2)
-                Psilh[i] = np.power(np.absolute(WFlh[:,i]),2)
+                psie[i]  = np.power(np.absolute(WFe[:,i]),2)
+                psihh[i] = np.power(np.absolute(WFhh[:,i]),2)
+                psilh[i] = np.power(np.absolute(WFlh[:,i]),2)
             
     else:
         #To Electrons
@@ -374,14 +387,14 @@ def Schrodinger(model,sparse = False,absolute = False):
         
         if absolute == False:
             for i in range(subbands):
-                Psie[i]  = wfe_e[:,i]
-                Psilh[i] = wfe_lh[:,i]
-                Psihh[i] = wfe_hh[:,i]
+                psie[i]  = wfe_e[:,i]
+                psilh[i] = wfe_lh[:,i]
+                psihh[i] = wfe_hh[:,i]
         else:
             for i in range(subbands):
-                Psie[i]  = np.power(np.absolute(wfe_e[:,i]),2)
-                Psilh[i] = np.power(np.absolute(wfe_lh[:,i]),2)
-                Psihh[i] = np.power(np.absolute(wfe_hh[:,i]),2)
+                psie[i]  = np.power(np.absolute(wfe_e[:,i]),2)
+                psilh[i] = np.power(np.absolute(wfe_lh[:,i]),2)
+                psihh[i] = np.power(np.absolute(wfe_hh[:,i]),2)
             
         for i in range(subbands):
             Ee[i] = energy_e[i]/q  # eV
@@ -401,7 +414,7 @@ def Schrodinger(model,sparse = False,absolute = False):
          
     # The solutions are degenerate: same energy
 #     return {"E": E,
-#             "Psi": Psi,
+#             "psi": psi,
 #             "xaxis":xaxis,
 #             }
             
@@ -416,11 +429,11 @@ def Schrodinger(model,sparse = False,absolute = False):
     class Results(): pass
     results          = Results()
     results.xaxis    = xaxis
-    results.Psie     = Psie
+    results.psie     = psie
     results.Ee       = Ee
-    results.Psilh    = Psilh
+    results.psilh    = psilh
     results.Elh      = Elh
-    results.Psihh    = Psihh
+    results.psihh    = psihh
     results.Ehh      = Ehh
     results.cb       = potcb
     results.vb       = potvb
@@ -436,8 +449,7 @@ def Schrodinger(model,sparse = False,absolute = False):
 
 
 
-class Solver:
-    
+class Solver:   
     def __init__(self,model):
         self.dx       = model.dx
         self.n        = model.n_max
@@ -455,15 +467,16 @@ class Solver:
         self.Qc          = model.Qc
         self.Qv          = model.Qv
         self.material  = model.material
+        self.structure_name=model.structure_name
         
     
     def QuantumSolutions(self,absolute = False,Print = False):
             self.Ee    = np.zeros(self.subbands)
             self.Elh   = np.zeros(self.subbands)
             self.Ehh   = np.zeros(self.subbands)
-            self.Psie  = np.zeros((self.n,self.subbands))
-            self.Psihh = np.zeros((self.n,self.subbands))
-            self.Psilh = np.zeros((self.n,self.subbands))
+            self.psie  = np.zeros((self.n,self.subbands))
+            self.psihh = np.zeros((self.n,self.subbands))
+            self.psilh = np.zeros((self.n,self.subbands))
             self.EHH   = np.zeros(self.subbands)
             self.ELH   = np.zeros(self.subbands)
             self.Hamiltonian_e  = H(self.pote,self.me,self.Fapp,self.dx,self.n)
@@ -508,17 +521,17 @@ class Solver:
         
             if absolute == False:
                 for i in range(self.subbands):
-                    self.Psie[:,i]  = self.wfe_e[:,i]
-                    self.Psilh[:,i] = self.wfe_lh[:,i]
-                    self.Psihh[:,i] = self.wfe_hh[:,i]
+                    self.psie[:,i]  = self.wfe_e[:,i]
+                    self.psilh[:,i] = self.wfe_lh[:,i]
+                    self.psihh[:,i] = self.wfe_hh[:,i]
             else:
                 for i in range(self.subbands):
-#                     self.Psie[:,i]  = np.power(np.absolute(self.wfe_e[:,i]),2)
-#                     self.Psilh[:,i] = np.power(np.absolute(self.wfe_lh[:,i]),2)
-#                     self.Psihh[:,i] = np.power(np.absolute(self.wfe_hh[:,i]),2)
-                      self.Psie[:,i]  = self.wfe_e[:,i]*self.wfe_e[:,i]
-                      self.Psilh[:,i] = self.wfe_lh[:,i]*self.wfe_lh[:,i]
-                      self.Psihh[:,i] = self.wfe_hh[:,i]*self.wfe_hh[:,i]
+#                     self.psie[:,i]  = np.power(np.absolute(self.wfe_e[:,i]),2)
+#                     self.psilh[:,i] = np.power(np.absolute(self.wfe_lh[:,i]),2)
+#                     self.psihh[:,i] = np.power(np.absolute(self.wfe_hh[:,i]),2)
+                      self.psie[:,i]  = self.wfe_e[:,i]*self.wfe_e[:,i]
+                      self.psilh[:,i] = self.wfe_lh[:,i]*self.wfe_lh[:,i]
+                      self.psihh[:,i] = self.wfe_hh[:,i]*self.wfe_hh[:,i]
             
             for i in range(self.subbands):
                 self.Ee[i]  = self.energy_e[i]/q  # eV
@@ -567,11 +580,11 @@ class Solver:
             class Results(): pass
             results          = Results()
             results.xaxis    = self.xaxis
-            results.Psie     = self.Psie
+            results.psie     = self.psie
             results.Ee       = self.Ee
-            results.Psilh    = self.Psilh
+            results.psilh    = self.psilh
             results.Elh      = self.Elh
-            results.Psihh    = self.Psihh
+            results.psihh    = self.psihh
             results.Ehh      = self.Ehh
             results.cb       = self.potcb
             results.vb       = self.potvb
@@ -631,9 +644,9 @@ class Solver:
             self.subbands = results.subbands
             self.cb   = results.cb
             self.vb   = results.vb
-            self.WF_e = results.Psie
-            self.WF_hh= results.Psihh
-            self.WF_lh= results.Psilh
+            self.WF_e = results.psie
+            self.WF_hh= results.psihh
+            self.WF_lh= results.psilh
             self.Ee   = results.Ee
             self.Ehh  = results.Ehh
             self.Elh  = results.Elh
@@ -649,9 +662,6 @@ class Solver:
             eymax  = max(self.cb) + eymax
             hymin  = min(self.vb) + hymin
             hymax  = max(self.vb) + hymax
-            
-            
-            
             
             f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(7,10))
             f.subplots_adjust(hspace=0.05)
@@ -717,6 +727,28 @@ class Solver:
             
             
             plt.show()
+
+    def save_data(self,results,**kwargs):
+        nx,ny =results.psie.shape
+        psie = np.zeros((nx,ny+1))
+        psihh = np.zeros((nx,ny+1))
+        psilh = np.zeros((nx,ny+1))
+        psie[:,0]=results.xaxis/nm
+        psihh[:,0]=results.xaxis/nm
+        psilh[:,0]=results.xaxis/nm
+        for i in enumerate(results.subbands):
+            psie[:,1:]=results.psie +  
+            psilh[:,1:]=results.psilh
+            psihh[:,1:]=results.psihh
+        
+
+
+
+        np.savetxt(save_path+'/'+self.structure_name+'-wf-electrons.txt',psie,delimiter=',')
+
+
+
+
             
             
             
@@ -744,19 +776,15 @@ class Solver:
             self.subbands = results.subbands
             self.cb   = results.cb
             self.vb   = results.vb
-            self.WF_e = results.Psie
-            self.WF_hh= results.Psihh
-            self.WF_lh= results.Psilh
+            self.WF_e = results.psie
+            self.WF_hh= results.psihh
+            self.WF_lh= results.psilh
             self.Ee   = results.Ee
             self.Ehh  = results.Ehh
             self.Elh  = results.Elh
             
             
             colors = ['b','r','g','orange','purple']
-            
-            
-        
-            
             
             f, (ax11, ax22) = plt.subplots(2, 1, sharex=True,figsize=(3,5))
             for i in range(self.subbands):
