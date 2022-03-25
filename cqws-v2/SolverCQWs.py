@@ -229,11 +229,20 @@ class StructureFrom(Structure):
             
             dop[startindex:finishindex] = chargedensity
         
+        self.count_layer=0
+        for layer in self.material:
+            if layer[5]=='well' or layer[5]=='cbarrier':
+                self.count_layer+=layer[0]
+                print(self.count_layer)
+
+
+        
         self.cb         = cb
         self.vb         = vb
         self.cb_meff    = cb_meff
         self.vblh_meff  = vblh_meff
         self.vbhh_meff  = vbhh_meff
+
         
                 
 
