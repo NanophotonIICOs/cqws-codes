@@ -20,7 +20,7 @@ from IPython.display import display, Math
 from tabulate import tabulate
 #from solcore import si, material
 from collections import namedtuple
-
+plt.style.use('plotstyle.mplstyle')
 
 # Time
 from datetime import date
@@ -231,9 +231,10 @@ class StructureFrom(Structure):
         
         self.count_layer=0
         for layer in self.material:
-            if layer[5]=='well' or layer[5]=='cbarrier':
+            if layer[5]=='well':
                 self.count_layer+=layer[0]
-                print(self.count_layer)
+            elif layer[5]=='cbarrier':
+                self.count_layer+=layer[0]
 
 
         
