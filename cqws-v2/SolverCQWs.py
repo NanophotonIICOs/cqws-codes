@@ -20,8 +20,6 @@ from IPython.display import display, Math
 from tabulate import tabulate
 #from solcore import si, material
 from collections import namedtuple
-plt.style.use('plotstyle.mplstyle')
-
 # Time
 from datetime import date
 from datetime import datetime
@@ -631,25 +629,6 @@ class Solver:
         
         
     def plotting(self,results,amp=10,axmin=20,axmax=20,eymin = 0,eymax=0,hymin=0,hymax=0):
-            plt.rcParams['xtick.labelsize']     = 15
-            plt.rcParams['ytick.labelsize']     = 15
-            plt.rcParams['axes.linewidth']      = 1
-            plt.rcParams["xtick.minor.visible"] =  True
-            plt.rcParams["xtick.major.size"]    =  8
-            plt.rcParams["xtick.minor.size"]    =  4
-            plt.rcParams["xtick.major.width"]   =  1
-            plt.rcParams["xtick.minor.width"]   =  1
-            plt.rcParams["xtick.direction"]     =  'in'
-            plt.rcParams["ytick.minor.visible"] =  True
-            plt.rcParams["ytick.major.size"]    =  8
-            plt.rcParams["ytick.minor.size"]    =  4
-            plt.rcParams["ytick.major.width"]   =  1
-            plt.rcParams["ytick.minor.width"]   =  1
-            plt.rcParams["ytick.direction"]     =  'in'
-            #plt.rcParams['text.usetex']         = True
-            plt.rcParams['legend.frameon']      = False
-            nm = 1e-9
-
             # Data
             self.subbands = results.subbands
             self.cb   = results.cb
@@ -660,11 +639,8 @@ class Solver:
             self.Ee   = results.Ee
             self.Ehh  = results.Ehh
             self.Elh  = results.Elh
-            
-            
+        
             colors = ['b','r','g','orange','purple']
-            
-            
             
             xmin = ((self.xaxis[self.n-1]/nm)/2)-axmin
             xmax = ((self.xaxis[self.n-1]/nm)/2)+axmax
@@ -673,7 +649,7 @@ class Solver:
             hymin  = min(self.vb) + hymin
             hymax  = max(self.vb) + hymax
             
-            f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(7,10))
+            f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(5,7))
             f.subplots_adjust(hspace=0.05)
             # Plot electrons and heavy holes
             ax1.plot(self.xaxis/nm,self.cb,ls='-',lw='2',color='gray')
@@ -699,14 +675,14 @@ class Solver:
                         label = '$\psi e_%d$'%(i))
                 #ax2.plot(self.xaxis/nm,self.WF_lh[:,i]-self.Elh[i],ls='-',lw='2')
             ax1.legend(loc = 2,fontsize=15)
-            ax1.set_ylabel(r'$\mathrm{Conduction\,\, Band\,\, [eV]}$',fontsize=20)
+            ax1.set_ylabel(r'CB-edge (eV)',fontsize=20)
             ax1.yaxis.set_label_coords(-0.14,0.5)
             ax1.set_xlim(xmin,xmax)  
             #ax1.set_ylim(eymin,eymax)
             # outliers only
             ax2.legend(loc = 0,fontsize=15)
             #ax2.set_ylim(hymin,hymax)  # most of the data
-            ax2.set_ylabel(r'$\mathrm{Valence\,\, Band\,\, [eV]}$',fontsize=20)
+            ax2.set_ylabel(r'VB-edge (eV)',fontsize=20)
             ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=20)
             ax2.yaxis.set_label_coords(-0.14,0.5)
             
