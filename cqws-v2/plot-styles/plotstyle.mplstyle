@@ -16,27 +16,27 @@ mathtext.rm:  sans
 ## * AXES                                                                    *
 ## ***************************************************************************
 #set the font-size and size of things
-figure.figsize: 10, 5
-axes.labelsize: 18
-axes.titlesize: 18
-xtick.labelsize: 14
-ytick.labelsize: 14
-legend.fontsize: 14
+figure.figsize: 7,7
+axes.labelsize: 15
+axes.titlesize: 15
+xtick.labelsize: 13
+ytick.labelsize: 13
+legend.fontsize: 13
 
 xtick.direction: in
 ytick.direction: in
 xtick.minor.visible: True   # visibility of minor ticks on x-axis
 ytick.minor.visible: True   # visibility of minor ticks on x-axis
-xtick.major.size:    10     # major tick size in points
-xtick.minor.size:    5   # minor tick size in points
-ytick.major.size:    10     # major tick size in points
-ytick.minor.size:    5   # minor tick size in points
+xtick.major.size:    8     # major tick size in points
+xtick.minor.size:    4   # minor tick size in points
+ytick.major.size:    8     # major tick size in points
+ytick.minor.size:    4   # minor tick size in points
 
 
-xtick.major.width: 2
-ytick.major.width: 2
-xtick.minor.width: 2
-ytick.minor.width: 2
+xtick.major.width: 1.5
+ytick.major.width: 1.5
+xtick.minor.width: 1.5
+ytick.minor.width: 1.5
 
 
                                    # separator in the fr_FR locale.
@@ -59,7 +59,7 @@ axes.formatter.offset_threshold: 3  # When useoffset is True, the offset
 
 patch.antialiased: True
 
-axes.linewidth: 2
+axes.linewidth: 1.5
 
 
 axes.prop_cycle: cycler('color', ['444444', '348ABD', '988ED5', '777777', 'FBC15E', '8EBA42', 'FFB5B8'])
