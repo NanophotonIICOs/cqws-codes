@@ -53,8 +53,6 @@ else:
 save_path=current_path+'/data'
 
 
-# From Aestimo
-
 Material = namedtuple('Material',['name','Gap','Me','Mhh','Mlh'])
 GaAs = Material('GaAs',lambda T: 1.522 - (5.8E-4*T**2/(300+T)),0.0665,0.55,0.083)
 AlAs = Material('AlAs',lambda T: 2.766 - (6e-4*T**2/(408+T)),0.15, 0.81, 0.16)
@@ -63,7 +61,7 @@ AlGaAs = Material('AlGaAs',lambda x,T: 1.155*x + 0.37*x**2 - 5.405E-4*T**2/(T+20
                         lambda x: (AlAs.Mhh*GaAs.Mhh)/(x*GaAs.Mhh + (1-x)*AlAs.Mhh),
                         lambda x: (AlAs.Mlh*GaAs.Mlh)/(x*GaAs.Mlh + (1-x)*AlAs.Mlh))
                 
-                
+# From Aestimo                
 def round2int(x):
     """int is sensitive to floating point numerical errors near whole numbers,
     this moves the discontinuity to the half interval. It is also equivalent
@@ -87,11 +85,6 @@ class Structure():
         self.dop         = dop
         self.cb_meff     = cb_meff
         self.subbands    = subbands
-        # self.scheme      = scheme
-        # self.HHBinding   = HHBinding
-        # self.LHBinding   = LHBinding
-        # self.Qc          = Qc
-        # self.Qv          = Qv
 
         # setting any extra parameters provided with initialisation
         for key,value in kwargs.items():
@@ -118,18 +111,12 @@ class StructureFrom(Structure):
         self.subbands =  inputfile.subbands
         self.HHBinding  = inputfile.HHBinding
         self.LHBinding  = inputfile.LHBinding
-#         self.ThHHBinding = inputfile.ThHHBinding
-#         self.ThLHBinding = inputfile.ThLHBinding
-#         self.naHHBinding = inputfile.naHHBinding
-#         self.naLHBinding = inputfile.naLHBinding
         self.Qc       = inputfile.Qc
         self.Qv       = inputfile.Qv
         # Loading material list
         self.material = inputfile.material
         totallayer = alen(self.material)
         print("Total layer number: %d" %(totallayer))
-        #self.material_property = database.materialproperty
-        #self.alloy_property = database.alloyproperty
         # Calculate the required number of grid points
         self.x_max = sum([layer[0] for layer in self.material])*1e-9 #total thickness (m)
         self.n_max = int(self.x_max/self.dx)
@@ -210,6 +197,7 @@ class StructureFrom(Structure):
                 cb_meff[startindex:finishindex]   = meAlGaAs(x)*m_e
                 vblh_meff[startindex:finishindex] = mlhAlGaAs(x)*m_e
                 vbhh_meff[startindex:finishindex] = mhhAlGaAs(x)*m_e
+
             elif matType == 'Vacuum':
                 cb[startindex:finishindex] = (EgGaAs(T)+0.5)*q
                 vb[startindex:finishindex] =  -(EgGaAs(T)+0.5)*q
@@ -417,15 +405,6 @@ def Schrodinger(model,sparse = False,absolute = False):
         ELH[i] = Ee[i]+Elh[i]-LHBinding
         display(Math(r'\text{Transition} \,E_{%d}-HH_{%d}: %.4f'%(i,i,EHH[i])))
         display(Math(r'\text{Transition} \,E_{%d}-LH_{%d}: %.4f'%(i,i,ELH[i]))) 
-    
-    #print('Transicion $E_{i}$')
-         
-    # The solutions are degenerate: same energy
-#     return {"E": E,
-#             "psi": psi,
-#             "xaxis":xaxis,
-#             }
-            
 
         
         
@@ -628,7 +607,7 @@ class Solver:
         trans_file.close()
         
         
-    def plotting(self,results,amp=10,axmin=20,axmax=20,eymin = 0,eymax=0,hymin=0,hymax=0):
+    def plotting(self,results,amp=10,axmin=20,axmax=20,eymin = 0,eymax=0,hymin=0,hymax=0,save=False):
             # Data
             self.subbands = results.subbands
             self.cb   = results.cb
@@ -674,16 +653,16 @@ class Solver:
                         color=colors[i],
                         label = '$\psi e_%d$'%(i))
                 #ax2.plot(self.xaxis/nm,self.WF_lh[:,i]-self.Elh[i],ls='-',lw='2')
-            ax1.legend(loc = 2,fontsize=15)
+            ax1.legend(loc = 2,fontsize=10,frameon=False)
             ax1.set_ylabel(r'CB-edge (eV)',fontsize=20)
             ax1.yaxis.set_label_coords(-0.14,0.5)
             ax1.set_xlim(xmin,xmax)  
             #ax1.set_ylim(eymin,eymax)
             # outliers only
-            ax2.legend(loc = 0,fontsize=15)
+            ax2.legend(loc = 2,fontsize=10,frameon=False)
             #ax2.set_ylim(hymin,hymax)  # most of the data
-            ax2.set_ylabel(r'VB-edge (eV)',fontsize=20)
-            ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=20)
+            ax2.set_ylabel(r'VB-edge (eV)',fontsize=17)
+            ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=17)
             ax2.yaxis.set_label_coords(-0.14,0.5)
             
             # hide the spines between ax and ax2
@@ -701,7 +680,7 @@ class Solver:
             l = 1
             # how big to make the diagonal lines in axes coordinates
             # arguments to pass to plot, just so we don't keep repeating them
-            kwargs = dict(transform=ax1.transAxes,lw=1, color='k', clip_on=False)
+            kwargs = dict(transform=ax1.transAxes,lw=2, color='k', clip_on=False)
             ax1.plot((0, +d), (0, 0), **kwargs)        # top-left diagonal
             ax1.plot((l - d, 0 + l), (0, +0), **kwargs)
 
@@ -709,10 +688,18 @@ class Solver:
             kwargs.update(transform=ax2.transAxes)  # switch to the bottom axes
             ax2.plot((0, +d), (1 , 1 + 0), **kwargs)  # bottom-left diagonal
             ax2.plot((1 - d, 1 + 0), (1 - 0, 1 + 0), **kwargs)  # bottom-right diagonal
+            
+            if save==True:
+                if os.path.isdir(current_path+'/plots'):
+                    print("The plots folder already exist")
+                else:
+                    print("The plots folder doesn't exist") 
+                    os.mkdir(current_path+'/plots')
+                    print("The plots folder was created successfully!")
 
-            
-            
+                plt.savefig('plots/%s.png'%(self.structure_name),dpi=300,bbox_inches='tight',transparent=True)
             plt.show()
+
 
     def save_data(self,results,**kwargs):
         nx,ny =results.psie.shape
