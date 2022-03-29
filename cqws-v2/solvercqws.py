@@ -20,8 +20,6 @@ from IPython.display import display, Math
 from tabulate import tabulate
 #from solcore import si, material
 from collections import namedtuple
-
-
 # Time
 from datetime import date
 from datetime import datetime
@@ -37,13 +35,23 @@ hbar = 1.054588757e-34
 m_e  = 9.1093826E-31 #kg
 pi   = np.pi
 eps0 = 8.8541878176e-12 #F/m
-
+nm=1e-9
 J2eV=1/q #Joules to eV
 eV2J=1*q #eV to Joules
 
 
+# create data files folder
+current_path=os.getcwd()
+print("Current PATH:%s"%(current_path))
+if os.path.isdir(current_path+'/data'):
+    print("The data folder already exist")
+else:
+    print("The data folder doesn't exist") 
+    os.mkdir(current_path+'/data')
+    print("The data folder was created successfully!")
 
-# From Aestimo
+save_path=current_path+'/data'
+
 
 Material = namedtuple('Material',['name','Gap','Me','Mhh','Mlh'])
 GaAs = Material('GaAs',lambda T: 1.522 - (5.8E-4*T**2/(300+T)),0.0665,0.55,0.083)
@@ -53,7 +61,7 @@ AlGaAs = Material('AlGaAs',lambda x,T: 1.155*x + 0.37*x**2 - 5.405E-4*T**2/(T+20
                         lambda x: (AlAs.Mhh*GaAs.Mhh)/(x*GaAs.Mhh + (1-x)*AlAs.Mhh),
                         lambda x: (AlAs.Mlh*GaAs.Mlh)/(x*GaAs.Mlh + (1-x)*AlAs.Mlh))
                 
-                
+# From Aestimo                
 def round2int(x):
     """int is sensitive to floating point numerical errors near whole numbers,
     this moves the discontinuity to the half interval. It is also equivalent
@@ -68,7 +76,7 @@ class Structure():
                   Vc,eps,dop,cb_meff, #arrays
                  **kwargs):
 
-        #value attributes        
+        #value attributes  
         self.T           = T
         self.Fapp        = Fapp
         self.N           = dx        
@@ -77,11 +85,7 @@ class Structure():
         self.dop         = dop
         self.cb_meff     = cb_meff
         self.subbands    = subbands
-        self.scheme      = scheme
-        self.Qc          = Qc
-        self.Qv          = Qv
-        self.ctest1      = ctest1
-        self.damped_factor = damped_factor
+
         # setting any extra parameters provided with initialisation
         for key,value in kwargs.items():
             setattr(self,key,value)
@@ -98,28 +102,28 @@ class AttrDict(dict):
 class StructureFrom(Structure):
     def __init__(self,inputfile):
         if type(inputfile)==dict:
-            inputfile=AttrDict(inputfile,database)            
+            inputfile=AttrDict(inputfile)            
         # Parameters for simulation
+        self.structure_name = inputfile.structure_name  
         self.Fapp     = inputfile.Fapp
         self.T        = inputfile.T
         self.dx       = inputfile.gridfactor*1e-9 #grid in m
         self.subbands =  inputfile.subbands
+        self.HHBinding  = inputfile.HHBinding
+        self.LHBinding  = inputfile.LHBinding
         self.Qc       = inputfile.Qc
         self.Qv       = inputfile.Qv
         # Loading material list
         self.material = inputfile.material
         totallayer = alen(self.material)
         print("Total layer number: %d" %(totallayer))
-        #self.material_property = database.materialproperty
-        #self.alloy_property = database.alloyproperty
         # Calculate the required number of grid points
         self.x_max = sum([layer[0] for layer in self.material])*1e-9 #total thickness (m)
         self.n_max = int(self.x_max/self.dx)
         self.create_structure_arrays()
         self.xaxis    = np.arange(0,self.n_max)*self.dx
         
-        self.ctest1        = inputfile.ctest1
-        self.damped_factor = inputfile.damped_factor
+        
         
     def create_structure_arrays(self):
         """ initialise arrays/lists for structure"""
@@ -146,11 +150,11 @@ class StructureFrom(Structure):
         EgGaAs   = lambda T: 1.519 - (5.405E-4*T**2/(204+T))
         #EgGaAs   = lambda T: 1.5216 - (8.871E-4*T**2/(572+T))
         #EgGaAs   = lambda T: 1.519 - (5.6E-4*T**2/(226+T))
-        #EgAlGaAs = lambda x,T: 1.155*x + 0.37*x**2 - (5.405E-4*T**2/(T+204))
-        EgAlGaAs = lambda x,T : 1.247*x - 0.0005405*T**2/(T+204)
+        EgAlGaAs = lambda x,T: 1.155*x + 0.37*x**2 - 5.405E-4*T**2/(T+204)
+        #EgAlGaAs = lambda x,T : 1.247*x - 0.0005405*T**2/(T+204)
         EgAlAs   = lambda T: 2.239 - (6.0e-4*T**2/(408+T))
         #Functions to calculate Effective Mass as a function of composition
-        meGaAs    = 0.066
+        meGaAs    = 0.0665
         mlhGaAs   = 0.094
         mhhGaAs   = 0.34
         meAlAs    = 0.154
@@ -174,12 +178,11 @@ class StructureFrom(Structure):
             x           = layer[2]
 
             if matType == 'GaAs':
-                cb[startindex:finishindex] =  EgGaAs(T)*q #material("GaAs")(T=self.T).band_gap
+                cb[startindex:finishindex] =  (EgGaAs(T))*q #material("GaAs")(T=self.T).band_gap
                 vb[startindex:finishindex] = 0
-                cb_meff[startindex:finishindex]  = meGaAs*m_e
+                cb_meff[startindex:finishindex]   = meGaAs*m_e
                 vblh_meff[startindex:finishindex] = mlhGaAs*m_e
                 vbhh_meff[startindex:finishindex] = mhhGaAs*m_e
-                eps[startindex:finishindex] = 12.90*eps0
             
             elif matType == 'AlAs':
                 cb[startindex:finishindex] =  (EgGaAs(T)+EgAlAs(T)*Qc)*q
@@ -194,7 +197,7 @@ class StructureFrom(Structure):
                 cb_meff[startindex:finishindex]   = meAlGaAs(x)*m_e
                 vblh_meff[startindex:finishindex] = mlhAlGaAs(x)*m_e
                 vbhh_meff[startindex:finishindex] = mhhAlGaAs(x)*m_e
-                eps[startindex:finishindex]=(x * 12.90 + (1 - x) * 10.06) * eps0
+
             elif matType == 'Vacuum':
                 cb[startindex:finishindex] = (EgGaAs(T)+0.5)*q
                 vb[startindex:finishindex] =  -(EgGaAs(T)+0.5)*q
@@ -209,15 +212,24 @@ class StructureFrom(Structure):
                 chargedensity = -layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
             else:
                 chargedensity = 0.0
+            
             dop[startindex:finishindex] = chargedensity
+        
+        self.count_layer=0
+        for layer in self.material:
+            if layer[5]=='well':
+                self.count_layer+=layer[0]
+            elif layer[5]=='cbarrier':
+                self.count_layer+=layer[0]
+
+
         
         self.cb         = cb
         self.vb         = vb
-        self.eps        = eps
         self.cb_meff    = cb_meff
         self.vblh_meff  = vblh_meff
         self.vbhh_meff  = vbhh_meff
-        self.dop        = dop
+
         
                 
 
@@ -286,7 +298,115 @@ def Hholes(vpot,mass,Fapp,dx,n):
 
 
             
+def Schrodinger(model,sparse = False,absolute = False):
+    dx       = model.dx
+    n        = model.n_max
+    subbands = model.subbands 
+    xaxis    = np.arange(0,n)*dx 
+    Fapp     = model.Fapp
+    pote     = model.cb + Fapp*q*xaxis
+    poth     = model.vb + Fapp*q*xaxis
+    me       = model.cb_meff
+    HHBinding = model.HHBinding
+    LHBinding = model.LHBinding
+    mlh      = model.vblh_meff
+    mhh      = model.vbhh_meff
+    
+    Ee    = np.zeros(subbands)
+    Elh   = np.zeros(subbands)
+    Ehh   = np.zeros(subbands)
+    psie  = np.zeros((subbands,n))
+    psihh = np.zeros((subbands,n))
+    psilh = np.zeros((subbands,n))
+    EHH   = np.zeros(subbands)
+    ELH   = np.zeros(subbands)
+    Hamiltonian_e  = H(pote,me,Fapp,dx,n)
+    Hamiltonian_lh = H(-poth,mlh,Fapp,dx,n)
+    Hamiltonian_hh = H(-poth,mhh,Fapp,dx,n)
+    meV = 1e3
+    
+    Pcb = pote
+    Pvb = poth
+    
+    
+    if sparse == False:
+        Ene,WFe   = eigh(Hamiltonian_e)
+        Enhh,WFhh = eigh(Hamiltonian_hh)
+        Enlh,WFlh = eigh(Hamiltonian_lh)
+        for i in range(subbands):
+            Ee[i]    = Ene[i]/q  # eV
+            Elh[i]   = Enlh[i]/q 
+            Ehh[i]   = Enhh[i]/q
+            potcb    = Pcb[:]/q
+            potvb    = Pvb[:]/q
+    
+        # Export Wavefunctions
+        if absolute == False:
+            for i in range(subbands):
+                psie[i]  = WFe[:,i]
+                psihh[i] = WFhh[:,i]
+                psilh[i] = WFlh[:,i]
+        else:
+            for i in range(subbands):
+                psie[i]  = np.power(np.absolute(WFe[:,i]),2)
+                psihh[i] = np.power(np.absolute(WFhh[:,i]),2)
+                psilh[i] = np.power(np.absolute(WFlh[:,i]),2)
+            
+    else:
+        #To Electrons
+        upper_e     = np.diag(Hamiltonian_e,k=1)
+        diagonal_e  = np.diag(Hamiltonian_e,k=0)
+        lower_e     = np.diag(Hamiltonian_e,k=-1)
+        H_diags_e = [lower_e,diagonal_e,upper_e]
+        Hn_e = scipy.sparse.diags(H_diags_e, [-1,0,1], format='csc')
+        energy_e,wfe_e = eigsh(Hn_e, k= model.subbands, sigma = 0.0,which = 'LM')
+        energy_e = energy_e.real
+        wfe_e = wfe_e
+        #To Light Holes
+        upper_lh     = np.diag(Hamiltonian_lh,k=1)
+        diagonal_lh  = np.diag(Hamiltonian_lh,k=0)
+        lower_lh     = np.diag(Hamiltonian_lh,k=-1)
+        H_diags_lh = [lower_lh,diagonal_lh,upper_lh]
+        Hn_lh = scipy.sparse.diags(H_diags_lh, [-1,0,1], format='csc')
+        energy_lh,wfe_lh = eigsh(Hn_lh, k= model.subbands, sigma = 0.0,which = 'LM')
+        energy_lh = energy_lh.real
+        wfe_lh = wfe_lh
+        #To Heavy Holes
+        upper_hh     = np.diag(Hamiltonian_hh,k=1)
+        diagonal_hh  = np.diag(Hamiltonian_hh,k=0)
+        lower_hh     = np.diag(Hamiltonian_hh,k=-1)
+        H_diags_hh   = [lower_hh,diagonal_hh,upper_hh]
+        Hn_hh        = scipy.sparse.diags(H_diags_hh, [-1,0,1], format='csc')
+        energy_hh,wfe_hh = eigsh(Hn_hh, k= model.subbands, sigma = 0.0,which = 'LM')
+        energy_hh = energy_hh.real
+        wfe_hh = wfe_hh
+        
+        if absolute == False:
+            for i in range(subbands):
+                psie[i]  = wfe_e[:,i]
+                psilh[i] = wfe_lh[:,i]
+                psihh[i] = wfe_hh[:,i]
+        else:
+            for i in range(subbands):
+                psie[i]  = np.power(np.absolute(wfe_e[:,i]),2)
+                psilh[i] = np.power(np.absolute(wfe_lh[:,i]),2)
+                psihh[i] = np.power(np.absolute(wfe_hh[:,i]),2)
+            
+        for i in range(subbands):
+            Ee[i] = energy_e[i]/q  # eV
+            Elh[i] = energy_lh[i]/q
+            Ehh[i] = energy_hh[i]/q
+            potcb  = Pcb/q
+            potvb  = Pvb/q
 
+        
+    for i in range(subbands):
+        EHH[i] = Ee[i]+Ehh[i]-HHBinding
+        ELH[i] = Ee[i]+Elh[i]-LHBinding
+        display(Math(r'\text{Transition} \,E_{%d}-HH_{%d}: %.4f'%(i,i,EHH[i])))
+        display(Math(r'\text{Transition} \,E_{%d}-LH_{%d}: %.4f'%(i,i,ELH[i]))) 
+
+        
         
         
         
@@ -296,11 +416,11 @@ def Hholes(vpot,mass,Fapp,dx,n):
     class Results(): pass
     results          = Results()
     results.xaxis    = xaxis
-    results.Psie     = Psie
+    results.psie     = psie
     results.Ee       = Ee
-    results.Psilh    = Psilh
+    results.psilh    = psilh
     results.Elh      = Elh
-    results.Psihh    = Psihh
+    results.psihh    = psihh
     results.Ehh      = Ehh
     results.cb       = potcb
     results.vb       = potvb
@@ -313,8 +433,10 @@ def Hholes(vpot,mass,Fapp,dx,n):
 
 
 
-class Solver:
-    
+
+
+
+class Solver:   
     def __init__(self,model):
         self.dx       = model.dx
         self.n        = model.n_max
@@ -326,21 +448,22 @@ class Solver:
         self.me       = model.cb_meff
         self.mlh      = model.vblh_meff
         self.mhh      = model.vbhh_meff
-        #self.HHBinding   = model.HHBinding
-        #self.LHBinding   = model.LHBinding
+        self.HHBinding   = model.HHBinding
+        self.LHBinding   = model.LHBinding
         self.T           = model.T
         self.Qc          = model.Qc
         self.Qv          = model.Qv
         self.material  = model.material
+        self.structure_name=model.structure_name
         
     
     def QuantumSolutions(self,absolute = False,Print = False):
             self.Ee    = np.zeros(self.subbands)
             self.Elh   = np.zeros(self.subbands)
             self.Ehh   = np.zeros(self.subbands)
-            self.Psie  = np.zeros((self.n,self.subbands))
-            self.Psihh = np.zeros((self.n,self.subbands))
-            self.Psilh = np.zeros((self.n,self.subbands))
+            self.psie  = np.zeros((self.n,self.subbands))
+            self.psihh = np.zeros((self.n,self.subbands))
+            self.psilh = np.zeros((self.n,self.subbands))
             self.EHH   = np.zeros(self.subbands)
             self.ELH   = np.zeros(self.subbands)
             self.Hamiltonian_e  = H(self.pote,self.me,self.Fapp,self.dx,self.n)
@@ -348,8 +471,8 @@ class Solver:
             self.Hamiltonian_hh = Hholes(self.poth,self.mhh,self.Fapp,self.dx,self.n)
             meV = 1e3
     
-            self.PCB = self.pote
-            self.PVB = self.poth
+            self.Pcb = self.pote
+            self.Pvb = self.poth
             
             # Eigenvalues and Eigenvectors to electrons in Conduction bands
             upper_e       = np.diag(self.Hamiltonian_e,k=1)
@@ -385,24 +508,24 @@ class Solver:
         
             if absolute == False:
                 for i in range(self.subbands):
-                    self.Psie[:,i]  = self.wfe_e[:,i]
-                    self.Psilh[:,i] = self.wfe_lh[:,i]
-                    self.Psihh[:,i] = self.wfe_hh[:,i]
+                    self.psie[:,i]  = self.wfe_e[:,i]
+                    self.psilh[:,i] = self.wfe_lh[:,i]
+                    self.psihh[:,i] = self.wfe_hh[:,i]
             else:
                 for i in range(self.subbands):
-#                     self.Psie[:,i]  = np.power(np.absolute(self.wfe_e[:,i]),2)
-#                     self.Psilh[:,i] = np.power(np.absolute(self.wfe_lh[:,i]),2)
-#                     self.Psihh[:,i] = np.power(np.absolute(self.wfe_hh[:,i]),2)
-                      self.Psie[:,i]  = self.wfe_e[:,i]*self.wfe_e[:,i]
-                      self.Psilh[:,i] = self.wfe_lh[:,i]*self.wfe_lh[:,i]
-                      self.Psihh[:,i] = self.wfe_hh[:,i]*self.wfe_hh[:,i]
+#                     self.psie[:,i]  = np.power(np.absolute(self.wfe_e[:,i]),2)
+#                     self.psilh[:,i] = np.power(np.absolute(self.wfe_lh[:,i]),2)
+#                     self.psihh[:,i] = np.power(np.absolute(self.wfe_hh[:,i]),2)
+                      self.psie[:,i]  = self.wfe_e[:,i]*self.wfe_e[:,i]
+                      self.psilh[:,i] = self.wfe_lh[:,i]*self.wfe_lh[:,i]
+                      self.psihh[:,i] = self.wfe_hh[:,i]*self.wfe_hh[:,i]
             
             for i in range(self.subbands):
                 self.Ee[i]  = self.energy_e[i]/q  # eV
                 self.Elh[i] = self.energy_lh[i]/q
                 self.Ehh[i] = self.energy_hh[i]/q
-                self.potcb  = self.PCB/q
-                self.potvb  = self.PVB/q
+                self.potcb  = self.Pcb/q
+                self.potvb  = self.Pvb/q
 
         
             for i in range(self.subbands):
@@ -444,14 +567,14 @@ class Solver:
             class Results(): pass
             results          = Results()
             results.xaxis    = self.xaxis
-            results.Psie     = self.Psie
+            results.psie     = self.psie
             results.Ee       = self.Ee
-            results.Psilh    = self.Psilh
+            results.psilh    = self.psilh
             results.Elh      = self.Elh
-            results.Psihh    = self.Psihh
+            results.psihh    = self.psihh
             results.Ehh      = self.Ehh
-            results.CB       = self.potcb
-            results.VB       = self.potvb
+            results.cb       = self.potcb
+            results.vb       = self.potvb
             results.dx       = self.dx
             results.subbands = self.subbands
             results.TEHH     = self.EHH
@@ -484,56 +607,31 @@ class Solver:
         trans_file.close()
         
         
-    def plotting(self,results,amp=10,axmin=20,axmax=20,eymin = 0,eymax=0,hymin=0,hymax=0):
-            plt.rcParams['xtick.labelsize']     = 15
-            plt.rcParams['ytick.labelsize']     = 15
-            plt.rcParams['axes.linewidth']      = 1
-            plt.rcParams["xtick.minor.visible"] =  True
-            plt.rcParams["xtick.major.size"]    =  8
-            plt.rcParams["xtick.minor.size"]    =  4
-            plt.rcParams["xtick.major.width"]   =  1
-            plt.rcParams["xtick.minor.width"]   =  1
-            plt.rcParams["xtick.direction"]     =  'in'
-            plt.rcParams["ytick.minor.visible"] =  True
-            plt.rcParams["ytick.major.size"]    =  8
-            plt.rcParams["ytick.minor.size"]    =  4
-            plt.rcParams["ytick.major.width"]   =  1
-            plt.rcParams["ytick.minor.width"]   =  1
-            plt.rcParams["ytick.direction"]     =  'in'
-            #plt.rcParams['text.usetex']         = True
-            plt.rcParams['legend.frameon']      = False
-            nm = 1e-9
-
+    def plotting(self,results,amp=10,axmin=20,axmax=20,eymin = 0,eymax=0,hymin=0,hymax=0,save=False):
             # Data
             self.subbands = results.subbands
-            self.CB   = results.CB
-            self.VB   = results.VB
-            self.WF_e = results.Psie
-            self.WF_hh= results.Psihh
-            self.WF_lh= results.Psilh
+            self.cb   = results.cb
+            self.vb   = results.vb
+            self.WF_e = results.psie
+            self.WF_hh= results.psihh
+            self.WF_lh= results.psilh
             self.Ee   = results.Ee
             self.Ehh  = results.Ehh
             self.Elh  = results.Elh
-            
-            
+        
             colors = ['b','r','g','orange','purple']
-            
-            
             
             xmin = ((self.xaxis[self.n-1]/nm)/2)-axmin
             xmax = ((self.xaxis[self.n-1]/nm)/2)+axmax
-            eymin  = min(self.CB) + eymin
-            eymax  = max(self.CB) + eymax
-            hymin  = min(self.VB) + hymin
-            hymax  = max(self.VB) + hymax
+            eymin  = min(self.cb) + eymin
+            eymax  = max(self.cb) + eymax
+            hymin  = min(self.vb) + hymin
+            hymax  = max(self.vb) + hymax
             
-            
-            
-            
-            f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(7,10))
+            f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(5,7))
             f.subplots_adjust(hspace=0.05)
             # Plot electrons and heavy holes
-            ax1.plot(self.xaxis/nm,self.CB,ls='-',lw='2',color='gray')
+            ax1.plot(self.xaxis/nm,self.cb,ls='-',lw='2',color='gray')
             for i in range(self.subbands):
                 ax1.plot(self.xaxis/nm,amp*self.WF_e[:,i]+self.Ee[i],
                         ls='-',
@@ -541,7 +639,7 @@ class Solver:
                         color=colors[i],
                         label = '$\psi e_%d$'%(i))
             
-            ax2.plot(self.xaxis/nm,self.VB,ls='-',lw='2',color='gray')
+            ax2.plot(self.xaxis/nm,self.vb,ls='-',lw='2',color='gray')
             
             for i in range(self.subbands):
                 ax2.plot(self.xaxis/nm,amp*self.WF_hh[:,i]-self.Ehh[i],
@@ -555,16 +653,16 @@ class Solver:
                         color=colors[i],
                         label = '$\psi e_%d$'%(i))
                 #ax2.plot(self.xaxis/nm,self.WF_lh[:,i]-self.Elh[i],ls='-',lw='2')
-            ax1.legend(loc = 2,fontsize=15)
-            ax1.set_ylabel(r'$\mathrm{Conduction\,\, Band\,\, [eV]}$',fontsize=20)
+            ax1.legend(loc = 2,fontsize=10,frameon=False)
+            ax1.set_ylabel(r'CB-edge (eV)',fontsize=20)
             ax1.yaxis.set_label_coords(-0.14,0.5)
             ax1.set_xlim(xmin,xmax)  
             #ax1.set_ylim(eymin,eymax)
             # outliers only
-            ax2.legend(loc = 0,fontsize=15)
+            ax2.legend(loc = 2,fontsize=10,frameon=False)
             #ax2.set_ylim(hymin,hymax)  # most of the data
-            ax2.set_ylabel(r'$\mathrm{Valence\,\, Band\,\, [eV]}$',fontsize=20)
-            ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=20)
+            ax2.set_ylabel(r'VB-edge (eV)',fontsize=17)
+            ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=17)
             ax2.yaxis.set_label_coords(-0.14,0.5)
             
             # hide the spines between ax and ax2
@@ -582,7 +680,7 @@ class Solver:
             l = 1
             # how big to make the diagonal lines in axes coordinates
             # arguments to pass to plot, just so we don't keep repeating them
-            kwargs = dict(transform=ax1.transAxes,lw=1, color='k', clip_on=False)
+            kwargs = dict(transform=ax1.transAxes,lw=2, color='k', clip_on=False)
             ax1.plot((0, +d), (0, 0), **kwargs)        # top-left diagonal
             ax1.plot((l - d, 0 + l), (0, +0), **kwargs)
 
@@ -590,13 +688,49 @@ class Solver:
             kwargs.update(transform=ax2.transAxes)  # switch to the bottom axes
             ax2.plot((0, +d), (1 , 1 + 0), **kwargs)  # bottom-left diagonal
             ax2.plot((1 - d, 1 + 0), (1 - 0, 1 + 0), **kwargs)  # bottom-right diagonal
+            
+            if save==True:
+                if os.path.isdir(current_path+'/plots'):
+                    print("The plots folder already exist")
+                else:
+                    print("The plots folder doesn't exist") 
+                    os.mkdir(current_path+'/plots')
+                    print("The plots folder was created successfully!")
 
-            
-            
+                plt.savefig('plots/%s.png'%(self.structure_name),dpi=300,bbox_inches='tight',transparent=True)
             plt.show()
-            
-            
-            
+
+
+    def save_data(self,results,**kwargs):
+        nx,ny =results.psie.shape
+        bands = np.zeros((nx,3))
+        psie = np.zeros((nx,ny+1))
+        psihh = np.zeros((nx,ny+1))
+        psilh = np.zeros((nx,ny+1))
+        bands[:,0]=results.xaxis/nm
+        psie[:,0]=results.xaxis/nm
+        psihh[:,0]=results.xaxis/nm
+        psilh[:,0]=results.xaxis/nm
+        
+        bands[:,1]=results.cb
+        bands[:,2]=results.vb
+
+        for key, value in kwargs.items():
+            if key=='absolute':
+                abs_value=value
+    
+       
+        for i in range(results.subbands):
+            psie[:,1+i] =results.psie[:,i]  + results.Ee[i]
+            psilh[:,1+i]=results.psilh[:,i] - results.Ehh[i]
+            psihh[:,1+i]=results.psihh[:,i] - results.Elh[i]
+
+        np.savetxt(save_path+'/'+self.structure_name+'-band-edge.txt',bands,delimiter=',')
+        np.savetxt(save_path+'/'+self.structure_name+'-wf-e.txt',psie,delimiter=',')
+        np.savetxt(save_path+'/'+self.structure_name+'-wf-hh.txt',psihh,delimiter=',')
+        np.savetxt(save_path+'/'+self.structure_name+'-wf-lh.txt',psilh,delimiter=',')
+
+      
     def plotting_subbands(self,results,symmetric = False,amp=10,axmin=0,axmax=1,eymin = 1.515,eymax=2,hymin=0,hymax=-0.1):
             plt.rcParams['xtick.labelsize']     = 13
             plt.rcParams['ytick.labelsize']     = 13
@@ -619,21 +753,17 @@ class Solver:
 
             # Data
             self.subbands = results.subbands
-            self.CB   = results.CB
-            self.VB   = results.VB
-            self.WF_e = results.Psie
-            self.WF_hh= results.Psihh
-            self.WF_lh= results.Psilh
+            self.cb   = results.cb
+            self.vb   = results.vb
+            self.WF_e = results.psie
+            self.WF_hh= results.psihh
+            self.WF_lh= results.psilh
             self.Ee   = results.Ee
             self.Ehh  = results.Ehh
             self.Elh  = results.Elh
             
             
             colors = ['b','r','g','orange','purple']
-            
-            
-        
-            
             
             f, (ax11, ax22) = plt.subplots(2, 1, sharex=True,figsize=(3,5))
             for i in range(self.subbands):
