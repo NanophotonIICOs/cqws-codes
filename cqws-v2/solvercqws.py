@@ -141,7 +141,7 @@ class StructureFrom(Structure):
         vb                = np.zeros(n_max) 
         Eg                = np.zeros(n_max)            #bandgap energy (?)
         eps               = np.zeros(n_max)        #dielectric constant
-        dop               = np.zeros(n_max)           #doping
+        self.dop           = np.zeros(n_max)           #doping
         T                 = self.T
         position          = 0.0 # keeping in nanometres (to minimise errors)
         
@@ -213,7 +213,7 @@ class StructureFrom(Structure):
             else:
                 chargedensity = 0.0
             
-            dop[startindex:finishindex] = chargedensity
+            self.dop[startindex:finishindex] = chargedensity
         
         self.count_layer=0
         for layer in self.material:
