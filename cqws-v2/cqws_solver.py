@@ -26,7 +26,6 @@ from collections import namedtuple
 from datetime import date
 from datetime import datetime
 today = date.today()
-
 #Defining constants and material parameters
 q    = 1.602176e-19 #C
 kBe  = 8.6173303e-5 # eV / K
