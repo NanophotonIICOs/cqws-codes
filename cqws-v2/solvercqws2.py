@@ -48,6 +48,7 @@ eV2J=1*q #eV to Joules
 Material = namedtuple('Material',['name','Gap','Me','Mhh','Mlh'])
 GaAs = Material('GaAs',lambda T: 1.522 - (5.8E-4*T**2/(300+T)),0.0665,0.55,0.083)
 AlAs = Material('AlAs',lambda T: 2.766 - (6e-4*T**2/(408+T)),0.15, 0.81, 0.16)
+InAs = Material('InAs',lambda T: 0.426 - (3.158*T**2/(93+T)),0.023, 0.41, 0.026)
 AlGaAs = Material('AlGaAs',lambda x,T: 1.155*x + 0.37*x**2 - 5.405E-4*T**2/(T+204),
                         lambda x: (AlAs.Me*GaAs.Me)/(x*GaAs.Me + (1-x)*AlAs.Me),
                         lambda x: (AlAs.Mhh*GaAs.Mhh)/(x*GaAs.Mhh + (1-x)*AlAs.Mhh),
@@ -150,6 +151,7 @@ class StructureFrom(Structure):
         # Donmez et al. Nanoscale Research Letters 2012 7:622
         # Functions to calculate Gap as a function of temperature and composition
         EgGaAs   = lambda T: 1.519 - (5.405E-4*T**2/(204+T))
+        EgInAs   = lambda T: 0.415 - (2.76E-4*T**2/(83+T))
         #EgGaAs   = lambda T: 1.5216 - (8.871E-4*T**2/(572+T))
         #EgGaAs   = lambda T: 1.519 - (5.6E-4*T**2/(226+T))
         EgAlGaAs = lambda x,T: 1.155*x + 0.37*x**2 - 5.405E-4*T**2/(T+204)
@@ -162,6 +164,9 @@ class StructureFrom(Structure):
         meAlAs    = 0.15
         mlhAlAs   = 0.16
         mhhAlAs   = 0.752
+        meInAs    = 0.023
+        mhhInAs   =  0.41
+        mlhInAs   =  0.026
         meAlGaAs  = lambda x: (meAlAs*meGaAs)/(x*meGaAs + (1-x)*meAlAs)
         mlhAlGaAs = lambda x: (mlhAlAs*mlhGaAs)/(x*mlhGaAs + (1-x)*mlhAlAs)
         mhhAlGaAs = lambda x: (mhhAlAs*mhhGaAs)/(x*mhhGaAs + (1-x)*mhhAlAs)
@@ -207,6 +212,13 @@ class StructureFrom(Structure):
                 cb_meff[startindex:finishindex]  =  meAlAs*m_e
                 vblh_meff[startindex:finishindex] = mlhAlAs*m_e
                 vbhh_meff[startindex:finishindex] = mhhAlAs*m_e
+            
+            elif matType == 'InAs':
+                CB[startindex:finishindex] =  (EgGaAs(T)-EgInAs(T)*Qc)*q
+                VB[startindex:finishindex] = -(EgInAs(T)*Qv)*q
+                cb_meff[startindex:finishindex]  =  meInAs*m_e
+                vblh_meff[startindex:finishindex] = mlhInAs*m_e
+                vbhh_meff[startindex:finishindex] = mhhInAs*m_e
         
             elif matType == 'AlGaAs':
                 CB[startindex:finishindex] =  (EgGaAs(T)+EgAlGaAs(x,T)*Qc)*q

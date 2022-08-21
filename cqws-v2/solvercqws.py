@@ -148,6 +148,7 @@ class StructureFrom(Structure):
         # Donmez et al. Nanoscale Research Letters 2012 7:622
         # Functions to calculate Gap as a function of temperature and composition
         EgGaAs   = lambda T: 1.519 - (5.405E-4*T**2/(204+T))
+        EgInAs   = lambda T: 0.415 - (2.76E-4*T**2/(83+T))
         #EgGaAs   = lambda T: 1.5216 - (8.871E-4*T**2/(572+T))
         #EgGaAs   = lambda T: 1.519 - (5.6E-4*T**2/(226+T))
         EgAlGaAs = lambda x,T: 1.155*x + 0.37*x**2 - 5.405E-4*T**2/(T+204)
@@ -160,6 +161,9 @@ class StructureFrom(Structure):
         meAlAs    = 0.154
         mlhAlAs   = 0.16
         mhhAlAs   = 0.76
+        meInAs    = 0.023
+        mhhInAs   =  0.41
+        mlhInAs   =  0.026
         meAlGaAs  = lambda x: (meAlAs*meGaAs)/(x*meGaAs + (1-x)*meAlAs)
         mlhAlGaAs = lambda x: (mlhAlAs*mlhGaAs)/(x*mlhGaAs + (1-x)*mlhAlAs)
         mhhAlGaAs = lambda x: (mhhAlAs*mhhGaAs)/(x*mhhGaAs + (1-x)*mhhAlAs)
@@ -190,6 +194,12 @@ class StructureFrom(Structure):
                 cb_meff[startindex:finishindex]  =  meAlAs*m_e
                 vblh_meff[startindex:finishindex] = mlhAlAs*m_e
                 vbhh_meff[startindex:finishindex] = mhhAlAs*m_e
+            elif matType == 'InAs':
+                cb[startindex:finishindex] =  (EgGaAs(T)-EgInAs(T)*Qc)*q
+                vb[startindex:finishindex] = -(EgInAs(T)*Qv)*q
+                cb_meff[startindex:finishindex]  =  meInAs*m_e
+                vblh_meff[startindex:finishindex] = mlhInAs*m_e
+                vbhh_meff[startindex:finishindex] = mhhInAs*m_e
         
             elif matType == 'AlGaAs':
                 cb[startindex:finishindex] =  (EgGaAs(T)+EgAlGaAs(x,T)*Qc)*q
