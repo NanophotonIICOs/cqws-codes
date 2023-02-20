@@ -4,7 +4,7 @@ import matplotlib as mpl
 from tqdm import tqdm
 import matplotlib.gridspec as gridspec
 import numpy as np
-alen = np.alen
+alen = np.alen()
 import os
 from math import log,exp
 from numpy import linalg as LA
