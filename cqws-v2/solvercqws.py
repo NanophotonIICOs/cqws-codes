@@ -4,7 +4,7 @@ import matplotlib as mpl
 from tqdm import tqdm
 import matplotlib.gridspec as gridspec
 import numpy as np
-alen = np.alen
+#alen = np.alen
 import os
 from math import log,exp
 from numpy import linalg as LA
@@ -69,7 +69,8 @@ def round2int(x):
     # int(x + (x>0) -0.5) # round2int for positive and negative numbers
     return int(x+0.5)
 
-
+def alen(x):
+    return 1 if np.isscalar(x) else len(x)
 
 class Structure():
     def __init__(self,T,Fapp,dx,subbands,  #parameters
