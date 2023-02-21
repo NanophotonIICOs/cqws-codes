@@ -23,22 +23,9 @@ from collections import namedtuple
 # Time
 from datetime import date
 from datetime import datetime
+from utils import constans, plotstyle.py
+
 today = date.today()
-
-#Defining constants and material parameters
-q    = 1.602176e-19 #C
-kBe  = 8.6173303e-5 # eV / K
-kb   = 1.3806504e-23 #J/K
-kbe  = 8.6173324e-5 #eV/K
-nii  = 0.0
-hbar = 1.054588757e-34
-m_e  = 9.1093826E-31 #kg
-pi   = np.pi
-eps0 = 8.8541878176e-12 #F/m
-nm=1e-9
-J2eV=1/q #Joules to eV
-eV2J=1*q #eV to Joules
-
 
 # create data files folder
 current_path=os.getcwd()
@@ -72,7 +59,7 @@ def round2int(x):
 def alen(x):
     return 1 if np.isscalar(x) else len(x)
 
-class Structure():
+class Structure(self):
     def __init__(self,T,Fapp,dx,subbands,  #parameters
                   Vc,eps,dop,cb_meff, #arrays
                  **kwargs):
@@ -98,7 +85,6 @@ class AttrDict(dict):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
-
     
 class StructureFrom(Structure):
     def __init__(self,inputfile):
@@ -106,14 +92,14 @@ class StructureFrom(Structure):
             inputfile=AttrDict(inputfile)            
         # Parameters for simulation
         self.structure_name = inputfile.structure_name  
-        self.Fapp     = inputfile.Fapp
-        self.T        = inputfile.T
-        self.dx       = inputfile.gridfactor*1e-9 #grid in m
-        self.subbands =  inputfile.subbands
-        self.HHBinding  = inputfile.HHBinding
-        self.LHBinding  = inputfile.LHBinding
-        self.Qc       = inputfile.Qc
-        self.Qv       = inputfile.Qv
+        self.Fapp           = inputfile.Fapp
+        self.T              = inputfile.T
+        self.dx             = inputfile.gridfactor*1e-9 #grid in m
+        self.subbands       =  inputfile.subbands
+        self.HHBinding      = inputfile.HHBinding
+        self.LHBinding      = inputfile.LHBinding
+        self.Qc             = inputfile.Qc
+        self.Qv             = inputfile.Qv
         # Loading material list
         self.material = inputfile.material
         totallayer = alen(self.material)
@@ -242,10 +228,6 @@ class StructureFrom(Structure):
         self.vbhh_meff  = vbhh_meff
 
         
-                
-
-
-            
             
 #--------------------------------- Schrodinger SOLVER 
 def H(vpot,mass,Fapp,dx,n):

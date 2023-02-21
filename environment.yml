@@ -1,0 +1,15 @@
+name: cqws-codes
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - numpy
+  - matplotlib
+  - tqdm
+  - numba
+  - scipy
+  - Ipython
+  - tabulate
+  - pandas
+  - h5py
+  - ipykernel
