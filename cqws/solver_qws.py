@@ -765,8 +765,6 @@ class Solver:
             ax11.xaxis.tick_top()
             ax11.tick_params(labeltop=False)  # don't put tick labels at the top
             ax22.xaxis.tick_bottom()
-            
-            
                 
             d = .01  
             l = 1
@@ -783,10 +781,3 @@ class Solver:
             
             plt.show()
             
-
-            
-            
-
-        
-        
-        
