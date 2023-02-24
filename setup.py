@@ -21,5 +21,9 @@ setup(
         'pandas',
         'h5py',
         'ipykernel',
+        'astropy',
+        'lumispy',
+        'specutils',
+        'peakutils'
     ],
 )
