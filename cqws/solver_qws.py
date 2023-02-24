@@ -235,9 +235,6 @@ class StructureFrom(Structure):
         self.cb_meff    = cb_meff
         self.vblh_meff  = vblh_meff
         self.vbhh_meff  = vbhh_meff
-
-        
-            
 #--------------------------------- Schrodinger SOLVER 
 def H(vpot,mass,Fapp,dx,n):
     vb   = vpot 
@@ -433,11 +430,6 @@ def Schrodinger(model,sparse = False,absolute = False):
     return results
 
 
-
-
-
-
-
 class Solver:   
     def __init__(self,model):
         self.dx       = model.dx
@@ -556,11 +548,11 @@ class Solver:
            
                                      
             
-            if Print == True:
+            if Print:
                 print('Direct Transitions')
                 for i in range(self.subbands):
-                    display(Math(r'\text{Transition} \,E_{%d}-HH_{%d}: %.4f'%(i+1,i+1,self.EHH[i])))
-                    display(Math(r'\text{Transition} \,E_{%d}-LH_{%d}: %.4f'%(i+1,i+1,self.ELH[i]))) 
+                    display(Math(r'\text{Transition} \,E_{%d}-HH_{%d}: %.4f eV - %.1f nm'%(i+1,i+1,self.EHH[i],1239.4/self.EHH[i])))
+                    display(Math(r'\text{Transition} \,E_{%d}-LH_{%d}: %.4f eV - %.1f nm'%(i+1,i+1,self.ELH[i],1239.4/self.ELH[i]))) 
                 print(tabulate(self.eprinte,['ELECTRON [eV]','HEAVY HOLE [eV]','LIGHT HOLE [eV]'],
                               tablefmt='orgtbl',stralign='center',floatfmt='.4f'))
 
