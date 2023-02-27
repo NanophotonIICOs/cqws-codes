@@ -61,7 +61,6 @@ def round2int(x):
     return int(x+0.5)
 
 
-
 class Structure():
     def __init__(self,T,Fapp,dx,subbands,  #parameters
                   Vc,eps,dop,cb_meff, #arrays
