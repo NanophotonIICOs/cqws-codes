@@ -1,0 +1,26 @@
+{
+    "GaAs":{
+        "Eg": "1.519 - (5.40e-4*T**2)/(204+T)",
+        "me": 0.0665,
+        "mlh":0.094,
+        "mhh":0.34
+    },
+    "AlGaAs":{
+        "Eg": "1.155*x + 0.37*x**2 - 5.405E-4*T**2/(T+204)",
+        "me": "(meAlAs*meGaAs)/(x*meGaAs + (1-x)*meAlAs)",
+        "mhh": "(mlhAlAs*mlhGaAs)/(x*mlhGaAs + (1-x)*mlhAlAs)",
+        "mlh": "(mhhAlAs*mhhGaAs)/(x*mhhGaAs + (1-x)*mhhAlAs)"
+    },
+    "AlAs":{
+        "Eg": "2.239 - (6.0e-4*T**2/(408+T))",
+        "me": 0.154,
+        "mlh": 0.76,
+        "mhh":0.16
+    },
+    "InAs":{
+        "Eg":"0.415 - (2.76E-4*T**2/(83+T))",
+        "me":0.023,
+        "mhh": 0.41,
+        "mlh":0.026
+    }
+}
