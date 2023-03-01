@@ -60,7 +60,8 @@ def round2int(x):
 def alen(x):
     return 1 if np.isscalar(x) else len(x)
 
-class Structure():
+
+class Structure:
     def __init__(self,T,Fapp,dx,subbands,  #parameters
                   Vc,eps,dop,cb_meff, #arrays
                   save_data_dir=None,
@@ -544,9 +545,7 @@ class Solver:
             for ii in range(self.subbands):
                 self.eprinte[ii,:] = [str('E'+str(ii+1)+'-> '+'%.4f'%self.Ee[ii]),
                                       str('HH'+str(ii+1)+'->'+'%.4f'%-self.Ehh[ii]),
-                                      str('LH'+str(ii+1)+'->'+'%.4f'%-self.Elh[ii])]
-           
-                                     
+                                      str('LH'+str(ii+1)+'->'+'%.4f'%-self.Elh[ii])]                         
             
             if Print:
                 print('Direct Transitions')
@@ -556,8 +555,6 @@ class Solver:
                 print(tabulate(self.eprinte,['ELECTRON [eV]','HEAVY HOLE [eV]','LIGHT HOLE [eV]'],
                               tablefmt='orgtbl',stralign='center',floatfmt='.4f'))
 
-            
-            
             class Results(): pass
             results          = Results()
             results.xaxis    = self.xaxis
@@ -615,8 +612,26 @@ class Solver:
         self.Ee   = results.Ee
         self.Ehh  = results.Ehh
         self.Elh  = results.Elh
-    
-        colors = ['b','r','g','orange','purple']
+        
+        import matplotlib.colors as mcolors
+        
+        def sort_colors_by_hue(colors):
+            # Crear un diccionario para almacenar los colores ordenados por matiz
+            hue_dict = {}
+            for name, hex in colors.items():
+                hue = mcolors.rgb_to_hsv(mcolors.hex2color(hex))[0]
+                hue_dict[name] = hue
+
+            # Ordenar los nombres de los colores por matiz
+            sorted_names = sorted(hue_dict, key=hue_dict.get)
+
+            # Crear una lista ordenada de colores
+            sorted_colors = [colors[name] for name in sorted_names]
+
+            return sorted_colors
+        # colors = ['b','r','g','orange','purple']
+        colors = sort_colors_by_hue(mcolors.CSS4_COLORS)
+
         
         xmin = ((self.xaxis[self.n-1]/nm)/2)-axmin
         xmax = ((self.xaxis[self.n-1]/nm)/2)+axmax
@@ -625,14 +640,14 @@ class Solver:
         hymin  = min(self.vb) + hymin
         hymax  = max(self.vb) + hymax
         
-        f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(5,7))
+        f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(5,4))
         f.subplots_adjust(hspace=0.05)
         # Plot electrons and heavy holes
         ax1.plot(self.xaxis/nm,self.cb,ls='-',lw='2',color='gray')
         for i in range(self.subbands):
             ax1.plot(self.xaxis/nm,amp*self.WF_e[:,i]+self.Ee[i],
                     ls='-',
-                    lw='2',
+                    lw='1',
                     color=colors[i],
                     label = '$\psi e_%d$'%(i))
         
@@ -641,25 +656,25 @@ class Solver:
         for i in range(self.subbands):
             ax2.plot(self.xaxis/nm,amp*self.WF_hh[:,i]-self.Ehh[i],
                         ls='-',
-                        lw='2',
+                        lw='1',
                         color=colors[i],
                         label = '$\psi hh_%d$'%(i))
             ax2.plot(self.xaxis/nm,amp*self.WF_e[:,i]-self.Elh[i],
                     ls=':',
-                    lw='2',
+                    lw='1',
                     color=colors[i],
-                    label = '$\psi e_%d$'%(i))
+                    label = '$\psi lh_%d$'%(i))
             #ax2.plot(self.xaxis/nm,self.WF_lh[:,i]-self.Elh[i],ls='-',lw='2')
-        ax1.legend(loc = 2,fontsize=10,frameon=False)
-        ax1.set_ylabel(r'CB-edge (eV)',fontsize=20)
+        ax1.legend(loc='upper left', bbox_to_anchor=(1.05, 1),fontsize=8,frameon=False)
+        ax1.set_ylabel(r'CB-edge (eV)',fontsize=11)
         ax1.yaxis.set_label_coords(-0.14,0.5)
         ax1.set_xlim(xmin,xmax)  
         #ax1.set_ylim(eymin,eymax)
         # outliers only
-        ax2.legend(loc = 2,fontsize=10,frameon=False)
+        ax2.legend(loc='upper left', bbox_to_anchor=(1.01, 1),fontsize=8,frameon=False,ncol=1)
         #ax2.set_ylim(hymin,hymax)  # most of the data
-        ax2.set_ylabel(r'VB-edge (eV)',fontsize=17)
-        ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=17)
+        ax2.set_ylabel(r'VB-edge (eV)',fontsize=11)
+        ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=13)
         ax2.yaxis.set_label_coords(-0.14,0.5)
         
         # hide the spines between ax and ax2
@@ -677,7 +692,7 @@ class Solver:
         l = 1
         # how big to make the diagonal lines in axes coordinates
         # arguments to pass to plot, just so we don't keep repeating them
-        kwargs = dict(transform=ax1.transAxes,lw=2, color='k', clip_on=False)
+        kwargs = dict(transform=ax1.transAxes,lw=1, color='k', clip_on=False)
         ax1.plot((0, +d), (0, 0), **kwargs)        # top-left diagonal
         ax1.plot((l - d, 0 + l), (0, +0), **kwargs)
 
