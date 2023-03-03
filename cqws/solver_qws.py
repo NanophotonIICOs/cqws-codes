@@ -138,7 +138,7 @@ class StructureFrom(Structure):
         vb                = np.zeros(n_max) 
         Eg                = np.zeros(n_max)            #bandgap energy (?)
         eps               = np.zeros(n_max)        #dielectric constant
-        self.dop           = np.zeros(n_max)           #doping
+        self.dop          = np.zeros(n_max)           #doping
         T                 = self.T
         position          = 0.0 # keeping in nanometres (to minimise errors)
         

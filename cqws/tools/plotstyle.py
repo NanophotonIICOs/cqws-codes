@@ -6,7 +6,6 @@ def load_style():
     stylelib_folder = os.path.join(matplotlib.get_configdir(), 'stylelib')
     if not os.path.exists(stylelib_folder):
         os.makedirs(stylelib_folder)
-
     filename = os.path.join(stylelib_folder, 'qws_solver_style.mplstyle')
     with open(filename, 'w') as f:
         f.write('figure.figsize : 7, 13\n')
