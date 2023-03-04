@@ -25,6 +25,9 @@ from datetime import date
 from datetime import datetime
 today = date.today()
 
+# plt.style.use('../tools/plotstyle.mplstyle')
+
+
 #Defining constants and material parameters
 q    = 1.602176e-19 #C
 kBe  = 8.6173303e-5 # eV / K
@@ -666,14 +669,14 @@ class Solver:
                     label = '$\psi lh_%d$'%(i))
             #ax2.plot(self.xaxis/nm,self.WF_lh[:,i]-self.Elh[i],ls='-',lw='2')
         ax1.legend(loc='upper left', bbox_to_anchor=(1.05, 1),fontsize=8,frameon=False)
-        ax1.set_ylabel(r'CB-edge (eV)',fontsize=11)
+        ax1.set_ylabel(r'$\mathrm{CB-edge (eV)}$',fontsize=11)
         ax1.yaxis.set_label_coords(-0.14,0.5)
         ax1.set_xlim(xmin,xmax)  
         #ax1.set_ylim(eymin,eymax)
         # outliers only
         ax2.legend(loc='upper left', bbox_to_anchor=(1.01, 1),fontsize=8,frameon=False,ncol=1)
         #ax2.set_ylim(hymin,hymax)  # most of the data
-        ax2.set_ylabel(r'VB-edge (eV)',fontsize=11)
+        ax2.set_ylabel(r'$\mathrm{VB-edge (eV)}$',fontsize=11)
         ax2.set_xlabel(r'$\mathrm{Growth\,\, Direction\,\, [nm]}$',fontsize=13)
         ax2.yaxis.set_label_coords(-0.14,0.5)
         
