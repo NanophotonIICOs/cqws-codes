@@ -95,21 +95,21 @@ class AttrDict(dict):
 
     
 class StructureFrom(Structure):
-    def __init__(self,inputfile)->dict:
+    def __init__(self,inputfile)->dict:  # type: ignore
         if type(inputfile)==dict:
             inputfile=AttrDict(inputfile)  
         # Parameters for simulation
-        self.structure_name = inputfile.structure_name  
-        self.Fapp           = inputfile.Fapp
-        self.T              = inputfile.T
-        self.dx             = inputfile.gridfactor*1e-9 #grid in m
-        self.subbands       =  inputfile.subbands
-        self.HHBinding      = inputfile.HHBinding
-        self.LHBinding      = inputfile.LHBinding
-        self.Qc             = inputfile.Qc
-        self.Qv             = inputfile.Qv
+        self.structure_name = inputfile.structure_name   # type: ignore
+        self.Fapp           = inputfile.Fapp  # type: ignore
+        self.T              = inputfile.T  # type: ignore
+        self.dx             = inputfile.gridfactor*1e-9 #grid in m  # type: ignore
+        self.subbands       = inputfile.subbands # type: ignore
+        self.HHBinding      = inputfile.HHBinding # type: ignore
+        self.LHBinding      = inputfile.LHBinding # type: ignore
+        self.Qc             = inputfile.Qc # type: ignore
+        self.Qv             = inputfile.Qv # type: ignore
         # Loading material list
-        self.material = inputfile.material
+        self.material = inputfile.material  # type: ignore
         totallayer = alen(self.material)
         print("Total layer number: %d" %(totallayer))
         # Calculate the required number of grid points
@@ -120,7 +120,7 @@ class StructureFrom(Structure):
         if not hasattr(inputfile, "save_data_dir"):
            self.save_data_dir = None
         else:
-            self.save_data_dir = inputfile.save_data_dir
+            self.save_data_dir = inputfile.save_data_dir  # type: ignore
         
         
         
@@ -361,7 +361,7 @@ def Schrodinger(model,sparse = False,absolute = False):
         diagonal_e  = np.diag(Hamiltonian_e,k=0)
         lower_e     = np.diag(Hamiltonian_e,k=-1)
         H_diags_e = [lower_e,diagonal_e,upper_e]
-        Hn_e = scipy.sparse.diags(H_diags_e, [-1,0,1], format='csc')
+        Hn_e = scipy.sparse.diags(H_diags_e, [-1,0,1], format='csc')  # type: ignore
         energy_e,wfe_e = eigsh(Hn_e, k= model.subbands, sigma = 0.0,which = 'LM')
         energy_e = energy_e.real
         wfe_e = wfe_e
@@ -370,7 +370,7 @@ def Schrodinger(model,sparse = False,absolute = False):
         diagonal_lh  = np.diag(Hamiltonian_lh,k=0)
         lower_lh     = np.diag(Hamiltonian_lh,k=-1)
         H_diags_lh = [lower_lh,diagonal_lh,upper_lh]
-        Hn_lh = scipy.sparse.diags(H_diags_lh, [-1,0,1], format='csc')
+        Hn_lh = scipy.sparse.diags(H_diags_lh, [-1,0,1], format='csc')  # type: ignore
         energy_lh,wfe_lh = eigsh(Hn_lh, k= model.subbands, sigma = 0.0,which = 'LM')
         energy_lh = energy_lh.real
         wfe_lh = wfe_lh
@@ -379,7 +379,7 @@ def Schrodinger(model,sparse = False,absolute = False):
         diagonal_hh  = np.diag(Hamiltonian_hh,k=0)
         lower_hh     = np.diag(Hamiltonian_hh,k=-1)
         H_diags_hh   = [lower_hh,diagonal_hh,upper_hh]
-        Hn_hh        = scipy.sparse.diags(H_diags_hh, [-1,0,1], format='csc')
+        Hn_hh        = scipy.sparse.diags(H_diags_hh, [-1,0,1], format='csc')  # type: ignore
         energy_hh,wfe_hh = eigsh(Hn_hh, k= model.subbands, sigma = 0.0,which = 'LM')
         energy_hh = energy_hh.real
         wfe_hh = wfe_hh
@@ -409,28 +409,21 @@ def Schrodinger(model,sparse = False,absolute = False):
         display(Math(r'\text{Transition} \,E_{%d}-HH_{%d}: %.4f'%(i,i,EHH[i])))
         display(Math(r'\text{Transition} \,E_{%d}-LH_{%d}: %.4f'%(i,i,ELH[i]))) 
 
-        
-        
-        
-        
-        
-        
-        
     class Results(): pass
     results          = Results()
-    results.xaxis    = xaxis
-    results.psie     = psie
-    results.Ee       = Ee
-    results.psilh    = psilh
-    results.Elh      = Elh
-    results.psihh    = psihh
-    results.Ehh      = Ehh
-    results.cb       = potcb
-    results.vb       = potvb
-    results.dx       = dx
-    results.subbands = subbands
-    results.TEHH     = EHH
-    results.TELH     = ELH
+    results.xaxis    = xaxis  # type: ignore
+    results.psie     = psie # type: ignore
+    results.Ee       = Ee  # type: ignore
+    results.psilh    = psilh  # type: ignore
+    results.Elh      = Elh # type: ignore
+    results.psihh    = psihh  # type: ignore
+    results.Ehh      = Ehh # type: ignore
+    results.cb       = potcb # type: ignore
+    results.vb       = potvb # type: ignore
+    results.dx       = dx # type: ignore
+    results.subbands = subbands # type: ignore
+    results.TEHH     = EHH # type: ignore
+    results.TELH     = ELH # type: ignore
     return results
 
 
@@ -477,7 +470,7 @@ class Solver:
             diagonal_e    = np.diag(self.Hamiltonian_e,k=0)
             lower_e       = np.diag(self.Hamiltonian_e,k=-1)
             H_diags_e     = [lower_e,diagonal_e,upper_e]
-            Hn_e          = scipy.sparse.diags(H_diags_e, [-1,0,1], format='csc')
+            Hn_e          = scipy.sparse.diags(H_diags_e, [-1,0,1], format='csc') #pyright: ignore
             self.energy_e,self.wfe_e = eigsh(Hn_e, k=self.subbands, sigma = 0.0,which = 'LM')
             self.energy_e = self.energy_e.real
             self.wfe_e    = self.wfe_e.real
@@ -487,7 +480,7 @@ class Solver:
             diagonal_lh    = np.diag(self.Hamiltonian_lh,k=0)
             lower_lh       = np.diag(self.Hamiltonian_lh,k=-1)
             H_diags_lh     = [lower_lh,diagonal_lh,upper_lh]
-            Hn_lh          = scipy.sparse.diags(H_diags_lh, [-1,0,1], format='csc')
+            Hn_lh          = scipy.sparse.diags(H_diags_lh, [-1,0,1], format='csc')  # type: ignore
             self.energy_lh,self.wfe_lh = eigsh(Hn_lh, k=self.subbands, sigma = 0.0,which = 'LM')
             self.energy_lh = self.energy_lh.real
             self.wfe_lh    = self.wfe_lh.real
@@ -498,11 +491,10 @@ class Solver:
             diagonal_hh    = np.diag(self.Hamiltonian_hh,k=0)
             lower_hh       = np.diag(self.Hamiltonian_hh,k=-1)
             H_diags_hh     = [lower_hh,diagonal_hh,upper_hh]
-            Hn_hh          = scipy.sparse.diags(H_diags_hh, [-1,0,1], format='csc')
+            Hn_hh          = scipy.sparse.diags(H_diags_hh, [-1,0,1], format='csc') #pyright: ignore
             self.energy_hh,self.wfe_hh = eigsh(Hn_hh, k=self.subbands, sigma = 0.0,which = 'LM')
             self.energy_hh = self.energy_hh.real
             self.wfe_hh    = self.wfe_hh.real
-        
         
             if absolute == False:
                 for i in range(self.subbands):
@@ -560,22 +552,22 @@ class Solver:
 
             class Results(): pass
             results          = Results()
-            results.xaxis    = self.xaxis
-            results.psie     = self.psie
-            results.Ee       = self.Ee
-            results.psilh    = self.psilh
-            results.Elh      = self.Elh
-            results.psihh    = self.psihh
-            results.Ehh      = self.Ehh
-            results.cb       = self.potcb
-            results.vb       = self.potvb
-            results.dx       = self.dx
-            results.subbands = self.subbands
-            results.TEHH     = self.EHH
-            results.TELH     = self.ELH
-            results.Energies = self.energies
-            results.PrintEn  = self.eprinte
-            results.DirectTransitions = self.DirectTransitions
+            results.xaxis    = self.xaxis   # type: ignore
+            results.psie     = self.psie    # type: ignore
+            results.Ee       = self.Ee   # type: ignore
+            results.psilh    = self.psilh # type: ignore
+            results.Elh      = self.Elh # type: ignore
+            results.psihh    = self.psihh # type: ignore
+            results.Ehh      = self.Ehh # type: ignore
+            results.cb       = self.potcb # type: ignore
+            results.vb       = self.potvb # type: ignore 
+            results.dx       = self.dx # type: ignore
+            results.subbands = self.subbands # type: ignore
+            results.TEHH     = self.EHH # type: ignore
+            results.TELH     = self.ELH # type: ignore
+            results.Energies = self.energies # type: ignore
+            results.PrintEn  = self.eprinte # type: ignore
+            results.DirectTransitions = self.DirectTransitions  # type: ignore
             return results
         
     def print_result(self,structure_name,results):
@@ -623,17 +615,17 @@ class Solver:
             hue_dict = {}
             for name, hex in colors.items():
                 hue = mcolors.rgb_to_hsv(mcolors.hex2color(hex))[0]
-                hue_dict[name] = hue
+                hue_dict[name] = hue  # type: ignore
 
             # Ordenar los nombres de los colores por matiz
-            sorted_names = sorted(hue_dict, key=hue_dict.get)
+            sorted_names = sorted(hue_dict, key=hue_dict.get) #pyright: ignore
 
             # Crear una lista ordenada de colores
             sorted_colors = [colors[name] for name in sorted_names]
 
             return sorted_colors
         # colors = ['b','r','g','orange','purple']
-        colors = sort_colors_by_hue(mcolors.CSS4_COLORS)
+        colors = sort_colors_by_hue(mcolors.CSS4_COLORS)  # type: ignore
 
         
         xmin = ((self.xaxis[self.n-1]/nm)/2)-axmin
@@ -695,21 +687,21 @@ class Solver:
         l = 1
         # how big to make the diagonal lines in axes coordinates
         # arguments to pass to plot, just so we don't keep repeating them
-        kwargs = dict(transform=ax1.transAxes,lw=1, color='k', clip_on=False)
+        kwargs = dict(transform=ax1.transAxes,lw=1, color='k', clip_on=False)  # type: ignore
         ax1.plot((0, +d), (0, 0), **kwargs)        # top-left diagonal
         ax1.plot((l - d, 0 + l), (0, +0), **kwargs)
 
 
-        kwargs.update(transform=ax2.transAxes)  # switch to the bottom axes
+        kwargs.update(transform=ax2.transAxes)  # switch to the bottom axes  # type: ignore
         ax2.plot((0, +d), (1 , 1 + 0), **kwargs)  # bottom-left diagonal
         ax2.plot((1 - d, 1 + 0), (1 - 0, 1 + 0), **kwargs)  # bottom-right diagonal
         
         if save==True:
-            if os.path.isdir(current_path+'/plots'):
+            if os.path.isdir(current_path+'/plots'):  # type: ignore
                 print("The plots folder already exist")
             else:
                 print("The plots folder doesn't exist") 
-                os.mkdir(current_path+'/plots')
+                os.mkdir(current_path+'/plots')  # type: ignore
                 print("The plots folder was created successfully!")
 
             plt.savefig('plots/%s.png'%(self.structure_name),dpi=300,bbox_inches='tight',transparent=True)
@@ -717,7 +709,7 @@ class Solver:
         return f
 
     def save_data(self,results,**kwargs):
-        from tools import mkdatadir
+        from tools import mkdatadir #pyright: ignore
         save_path =  mkdatadir(self.save_path)
         
         nx,ny =results.psie.shape
@@ -733,7 +725,7 @@ class Solver:
         bands[:,1]=results.cb
         bands[:,2]=results.vb
 
-        for key, value in kwargs.items():
+        for key, value in kwargs.items():  # type: ignore
             if key=='absolute':
                 abs_value=value
     
@@ -770,9 +762,6 @@ class Solver:
             
                 ax11.plot([0.2,0.8],[self.Ee[i],self.Ee[i]],'-b')
             
-            
-            
-            
             ax11.set_ylim(eymin,eymax)
             ax11.set_xlim(axmin,axmax) 
             
@@ -788,7 +777,7 @@ class Solver:
             l = 1
             # how big to make the diagonal lines in axes coordinates
             # arguments to pass to plot, just so we don't keep repeating them
-            kwargs = dict(transform=ax11.transAxes, lw=1,color='k', clip_on=False)
+            kwargs = dict(transform=ax11.transAxes, lw=1,color='k', clip_on=False)  # type: ignore
             ax11.plot((0, +d), (0, 0), **kwargs)        # top-left diagonal
             ax11.plot((l - d, 0 + l), (0, +0), **kwargs)
 
