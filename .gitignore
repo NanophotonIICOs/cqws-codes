@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 examples/data
-examples/efield-m4_3523
+examples/efiled-m4_3523
 examples/figures
 examples/harrison-data
 examples/khakshoor-data
@@ -145,5 +145,7 @@ examples/pl_lineshape.ipynb
 examples/qwells-comp.ipynb
 examples/r-betancourt-riera-et-al.ipynb
 examples/schr-poisson.ipynb
+examples/cqws-calculations.html
+
 
 
