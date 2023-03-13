@@ -23,7 +23,7 @@ from collections import namedtuple
 # Time
 from datetime import date
 from datetime import datetime
-from utils import constans, plotstyle.py
+# from cqws.tools import constans, plotstyle
 
 today = date.today()
 
@@ -59,7 +59,7 @@ def round2int(x):
 def alen(x):
     return 1 if np.isscalar(x) else len(x)
 
-class Structure(self):
+class Structure:
     def __init__(self,T,Fapp,dx,subbands,  #parameters
                   Vc,eps,dop,cb_meff, #arrays
                  **kwargs):
@@ -109,8 +109,6 @@ class StructureFrom(Structure):
         self.n_max = int(self.x_max/self.dx)
         self.create_structure_arrays()
         self.xaxis    = np.arange(0,self.n_max)*self.dx
-        
-        
         
     def create_structure_arrays(self):
         """ initialise arrays/lists for structure"""
@@ -399,12 +397,6 @@ def Schrodinger(model,sparse = False,absolute = False):
         display(Math(r'\text{Transition} \,E_{%d}-HH_{%d}: %.4f'%(i,i,EHH[i])))
         display(Math(r'\text{Transition} \,E_{%d}-LH_{%d}: %.4f'%(i,i,ELH[i]))) 
 
-        
-        
-        
-        
-        
-        
         
     class Results(): pass
     results          = Results()

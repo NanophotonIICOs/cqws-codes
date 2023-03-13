@@ -1,0 +1,69 @@
+# Estilo de Matplotlib personalizado con todos los parámetros disponibles
+
+# Configuración global
+figure.figsize: 8, 6
+figure.dpi: 100
+figure.facecolor: white
+figure.edgecolor: white
+
+# Configuración del eje
+axes.titlesize: 20
+axes.titleweight: bold
+axes.labelsize: 16
+axes.labelweight: bold
+axes.linewidth: 1
+axes.grid: True
+axes.grid.axis: both
+axes.grid.which: both
+axes.grid.alpha: 0.3
+axes.grid.color: gray
+axes.axisbelow: True
+
+# Configuración de la línea
+lines.linewidth: 2
+lines.linestyle: -
+lines.marker: None
+lines.markeredgecolor: auto
+lines.markeredgewidth: 0.5
+lines.markerfacecolor: auto
+lines.markersize: 6
+lines.solid_capstyle: projecting
+lines.solid_joinstyle: round
+lines.antialiased: True
+
+# Configuración del marcador
+markers.fillstyle: full
+markers.path: (None, 0)
+markers.scale: 1.0
+
+# Configuración de la leyenda
+legend.loc: best
+legend.numpoints: 1
+legend.fontsize: 14
+legend.edgecolor: white
+legend.facecolor: white
+legend.framealpha: 0.8
+legend.shadow: False
+legend.scatterpoints: 1
+legend.handlelength: 2.5
+legend.handleheight: 0.7
+
+# Configuración del texto
+text.color: black
+text.usetex: False
+text.latex.preview: True
+text.latex.preamble: \\usepackage{amsmath}
+text.hinting: True
+text.hinting_factor: 8
+text.antialiased: True
+text.alpha: None
+text.dpi: 72
+
+# Configuración de la fuente
+font.family: sans-serif
+font.serif: DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
+font.sans-serif: DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
+font.cursive: Apple Chancery, Textile, Zapf Chancery, Sand, cursive
+font.fantasy: Comic Sans MS, Chicago, Charcoal, Impact, Western, fantasy
+font.monospace: DejaVu Sans Mono, Bitstream Vera Sans Mono, Computer Modern Typewriter, Andale Mono, Nimbus Mono L, Courier New, Courier, Fixed, Terminal, monospace
+font.size: 14

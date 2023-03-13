@@ -127,3 +127,23 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+examples/data
+examples/efield-m4_3523
+examples/figures
+examples/harrison-data
+examples/khakshoor-data
+examples/plots
+examples/plot-styles
+examples/cqws-calculations.ipynb
+examples/cqws.ipynb
+examples/cqws2.ipynb
+examples/cqws-profiles.ipynb
+examples/cqws-with-applied-electricfield.ipynb
+examples/dcqws-iico.ipynb
+examples/pl_lineshape.ipynb
+examples/qwells-comp.ipynb
+examples/r-betancourt-riera-et-al.ipynb
+examples/schr-poisson.ipynb
+
+

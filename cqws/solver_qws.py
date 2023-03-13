@@ -117,6 +117,7 @@ class StructureFrom(Structure):
         self.n_max = int(self.x_max/self.dx)
         self.create_structure_arrays()
         self.xaxis    = np.arange(0,self.n_max)*self.dx
+        
         if not hasattr(inputfile, "save_data_dir"):
            self.save_data_dir = None
         else:
