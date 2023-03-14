@@ -117,7 +117,6 @@ class StructureFrom(Structure):
         self.n_max = int(self.x_max/self.dx)
         self.create_structure_arrays()
         self.xaxis    = np.arange(0,self.n_max)*self.dx
-        
         if not hasattr(inputfile, "save_data_dir"):
            self.save_data_dir = None
         else:
@@ -448,7 +447,24 @@ class Solver:
         self.material  = model.material
         self.structure_name=model.structure_name
         self.save_path = model.save_data_dir
-    
+
+        self.Results = namedtuple('Result', ['xaxis',
+                                            'n',
+                                        'psie',
+                                        'Ee',
+                                        'psilh',
+                                        'Elh',
+                                        'psihh',
+                                        'Ehh',
+                                        'cb',
+                                        'vb',
+                                        'dx',
+                                        'subbands',
+                                        'TEHH',
+                                        'TELH',
+                                        'Energies',
+                                        'PrintEn',
+                                        'DirectTransitions'])
     def QuantumSolutions(self,absolute = False,Print = False):
             self.Ee    = np.zeros(self.subbands)
             self.Elh   = np.zeros(self.subbands)
@@ -551,25 +567,45 @@ class Solver:
                 print(tabulate(self.eprinte,['ELECTRON [eV]','HEAVY HOLE [eV]','LIGHT HOLE [eV]'],
                               tablefmt='orgtbl',stralign='center',floatfmt='.4f'))
 
-            class Results(): pass
-            results          = Results()
-            results.xaxis    = self.xaxis   # type: ignore
-            results.psie     = self.psie    # type: ignore
-            results.Ee       = self.Ee   # type: ignore
-            results.psilh    = self.psilh # type: ignore
-            results.Elh      = self.Elh # type: ignore
-            results.psihh    = self.psihh # type: ignore
-            results.Ehh      = self.Ehh # type: ignore
-            results.cb       = self.potcb # type: ignore
-            results.vb       = self.potvb # type: ignore 
-            results.dx       = self.dx # type: ignore
-            results.subbands = self.subbands # type: ignore
-            results.TEHH     = self.EHH # type: ignore
-            results.TELH     = self.ELH # type: ignore
-            results.Energies = self.energies # type: ignore
-            results.PrintEn  = self.eprinte # type: ignore
-            results.DirectTransitions = self.DirectTransitions  # type: ignore
-            return results
+            # class Results(): pass
+            # results          = Results()
+            # results.xaxis    = self.xaxis   # type: ignore
+            # results.psie     = self.psie    # type: ignore
+            # results.Ee       = self.Ee   # type: ignore
+            # results.psilh    = self.psilh # type: ignore
+            # results.Elh      = self.Elh # type: ignore
+            # results.psihh    = self.psihh # type: ignore
+            # results.Ehh      = self.Ehh # type: ignore
+            # results.cb       = self.potcb # type: ignore
+            # results.vb       = self.potvb # type: ignore 
+            # results.dx       = self.dx # type: ignore
+            # results.subbands = self.subbands # type: ignore
+            # results.TEHH     = self.EHH # type: ignore
+            # results.TELH     = self.ELH # type: ignore
+            # results.Energies = self.energies # type: ignore
+            # results.PrintEn  = self.eprinte # type: ignore
+            # results.DirectTransitions = self.DirectTransitions  # type: ignore
+            self.TEHH     = self.EHH
+            self.TELH     = self.ELH
+            self.Energies = self.energies
+            self.PrintEn  = self.eprinte
+            return self.Results(self.xaxis,
+                                self.n,
+                                self.psie,
+                                self.Ee,
+                                self.psilh,
+                                self.Elh,
+                                self.psihh,
+                                self.Ehh,
+                                self.potcb,
+                                self.potvb,
+                                self.dx,
+                                self.subbands,
+                                self.TEHH,
+                                self.TELH,
+                                self.Energies,
+                                self.PrintEn,
+                                self.DirectTransitions)
         
     def print_result(self,structure_name,results):
         self.eprinte = results.PrintEn
@@ -599,16 +635,10 @@ class Solver:
         # plotstyle.load_style()
 
         # Data
-        self.subbands = results.subbands
-        self.cb   = results.cb
-        self.vb   = results.vb
-        self.WF_e = results.psie
+
         self.WF_hh= results.psihh
         self.WF_lh= results.psilh
-        self.Ee   = results.Ee
-        self.Ehh  = results.Ehh
-        self.Elh  = results.Elh
-        
+
         import matplotlib.colors as mcolors
         
         def sort_colors_by_hue(colors):
@@ -629,33 +659,33 @@ class Solver:
         colors = sort_colors_by_hue(mcolors.CSS4_COLORS)  # type: ignore
 
         
-        xmin = ((self.xaxis[self.n-1]/nm)/2)-axmin
-        xmax = ((self.xaxis[self.n-1]/nm)/2)+axmax
-        eymin  = min(self.cb) + eymin
-        eymax  = max(self.cb) + eymax
-        hymin  = min(self.vb) + hymin
-        hymax  = max(self.vb) + hymax
+        xmin = ((results.xaxis[results.n-1]/nm)/2)-axmin
+        xmax = ((results.xaxis[results.n-1]/nm)/2)+axmax
+        eymin  = min(results.cb) + eymin
+        eymax  = max(results.cb) + eymax
+        hymin  = min(results.vb) + hymin
+        hymax  = max(results.vb) + hymax
         
         f, (ax1, ax2) = plt.subplots(2, 1, sharex=True,figsize=(5,4))
         f.subplots_adjust(hspace=0.05)
         # Plot electrons and heavy holes
-        ax1.plot(self.xaxis/nm,self.cb,ls='-',lw='2',color='gray')
-        for i in range(self.subbands):
-            ax1.plot(self.xaxis/nm,amp*self.WF_e[:,i]+self.Ee[i],
+        ax1.plot(results.xaxis/nm,results.cb,ls='-',lw='2',color='gray')
+        for i in range(results.subbands):
+            ax1.plot(results.xaxis/nm,amp*results.psie[:,i]+results.Ee[i],
                     ls='-',
                     lw='1',
                     color=colors[i],
                     label = '$\psi e_%d$'%(i))
         
-        ax2.plot(self.xaxis/nm,self.vb,ls='-',lw='2',color='gray')
+        ax2.plot(results.xaxis/nm,results.vb,ls='-',lw='2',color='gray')
         
         for i in range(self.subbands):
-            ax2.plot(self.xaxis/nm,amp*self.WF_hh[:,i]-self.Ehh[i],
+            ax2.plot(results.xaxis/nm,amp*results.psihh[:,i]-results.Ehh[i],
                         ls='-',
                         lw='1',
                         color=colors[i],
                         label = '$\psi hh_%d$'%(i))
-            ax2.plot(self.xaxis/nm,amp*self.WF_e[:,i]-self.Elh[i],
+            ax2.plot(results.xaxis/nm,amp*results.psilh[:,i]-results.Elh[i],
                     ls=':',
                     lw='1',
                     color=colors[i],
@@ -683,7 +713,6 @@ class Solver:
                             top=False,         # ticks along the top edge are off
                             labelbottom=False)
         ax2.xaxis.tick_bottom()
-        
         d = .05
         l = 1
         # how big to make the diagonal lines in axes coordinates
@@ -691,12 +720,9 @@ class Solver:
         kwargs = dict(transform=ax1.transAxes,lw=1, color='k', clip_on=False)  # type: ignore
         ax1.plot((0, +d), (0, 0), **kwargs)        # top-left diagonal
         ax1.plot((l - d, 0 + l), (0, +0), **kwargs)
-
-
         kwargs.update(transform=ax2.transAxes)  # switch to the bottom axes  # type: ignore
         ax2.plot((0, +d), (1 , 1 + 0), **kwargs)  # bottom-left diagonal
         ax2.plot((1 - d, 1 + 0), (1 - 0, 1 + 0), **kwargs)  # bottom-right diagonal
-        
         if save==True:
             if os.path.isdir(current_path+'/plots'):  # type: ignore
                 print("The plots folder already exist")
@@ -706,7 +732,7 @@ class Solver:
                 print("The plots folder was created successfully!")
 
             plt.savefig('plots/%s.png'%(self.structure_name),dpi=300,bbox_inches='tight',transparent=True)
-        plt.show()
+            
         return f
 
     def save_data(self,results,**kwargs):
