@@ -655,8 +655,9 @@ class Solver:
             sorted_colors = [colors[name] for name in sorted_names]
 
             return sorted_colors
-        # colors = ['b','r','g','orange','purple']
-        colors = sort_colors_by_hue(mcolors.CSS4_COLORS)  # type: ignore
+        # colors = sort_colors_by_hue(mcolors.CSS4_COLORS)  # type: ignore
+        cmap = plt.get_cmap('tab10')
+        colors = cmap(np.linspace(0, 1, results.subbands))
 
         
         xmin = ((results.xaxis[results.n-1]/nm)/2)-axmin
