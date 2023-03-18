@@ -2,10 +2,20 @@
 In this repository, we share the codes used to calculate Coupled Quantum Wells (CQWs) as implemented in the PhD project of O. Ruiz-Cigarrillo, in collaboration with C.A. Bravo-Velazquez and G.A. Martinez-Zepeda. These codes are continuously being developed by the group of  [Prof. Dr. A. Lastras-Martinez](https://scholar.google.com.mx/citations?user=D7IB_lIAAAAJ&hl=en&oi=ao) and [Dra. L.E. Guevara-Macias](https://scholar.google.es/citations?user=BDxMfXYAAAAJ&hl=es&oi=ao) through student [C. Hernández-Juache](https://github.com/orgs/NanophotonIICOs/people/Citlali-Juache). The first version,refers to the initial implementation, while the second version,  was developed  with the incorporation of [AESTIMO](https://www.aestimosolver.org/) code and [SOLCORE](https://www.solcore.solar/). The objective of this repository is to enhance the codes used for numerical calculations in CQWs structures and Quantum Wells with arbitrary potential.
 <p align=center>
 
+# Installation
+We recommend creating a virtual environment, for example, a conda environment (see environment.yml) and installing through pip.
+```bash
+pip install .
+```
+and developed mode (<span style="color:RED">We recommend this to help us to improve our code </span>
+)
+```bash
+pip install -e .
+```
 # Example
 
 The module needs to declare like a structure as a next example (like a [AESTIMO](https://www.aestimosolver.org/)):
-
+(<span style="color:blue">see examples/numerical-results.ipynb</span>)
 ``` python
 class Structure(object): pass
 s = Structure() # this will be our datastructure
