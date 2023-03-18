@@ -1,0 +1,76 @@
+CQWS CODES
+==========
+En este repositorio, compartimos los códigos utilizados para calcular los pozos cuánticos acoplados (CQWs) implementados en el proyecto de doctorado de O. Ruiz-Cigarrillo, en colaboración con C.A. Bravo-Velázquez y G.A. Martínez-Zepeda. Estos códigos están siendo desarrollados continuamente por el grupo del `Prof. Dr. A. Lastras-Martínez <https://scholar.google.com.mx/citations?user=D7IB_lIAAAAJ&hl=en&oi=ao>`_ y la `Dra. L.E. Guevara-Macías <https://scholar.google.es/citations?user=BDxMfXYAAAAJ&hl=es&oi=ao>`_ a través de la estudiante `C. Hernández-Juache <https://github.com/orgs/NanophotonIICOs/people/Citlali-Juache>`_. La primera versión se refiere a la implementación inicial, mientras que la segunda versión se desarrolló con la incorporación del código `AESTIMO <https://www.aestimosolver.org/>`_ y `SOLCORE <https://www.solcore.solar/>`_. El objetivo de este repositorio es mejorar los códigos utilizados para cálculos numéricos en estructuras CQWs y pozos cuánticos con potencial arbitrario.
+
+Installation
+------------
+We recommend creating a virtual environment, for example, a conda environment (see `environment.yml`) and installing through pip:
+
+.. code-block:: bash
+
+    pip install .
+
+To run the code in developed mode, we recommend installing in editable mode (`-e`) to help us improve our code:
+
+.. code-block:: bash
+
+    pip install -e .
+
+
+
+Example
+--------
+
+
+The module needs to declare like a structure as a next example (like a `AESTIMO <https://www.aestimosolver.org/>`_):
+(`see examples/numerical-results.ipynb`)
+
+.. code-block:: python
+
+    class Structure(object): pass
+    s = Structure() # this will be our datastructure
+    s.structure_name="name"
+    # TEMPERATURE
+    s.T = 30 # in Kelvin
+    # Binding Energy
+    s.HHBinding =6.1e-3 #meV
+    s.LHBinding =6.8e-3 #meV
+    # Band Offset ratios
+    s.Qc = 0.65
+    s.Qv = 0.35
+    # Total subband number to be calculated for electrons
+    s.subbands = 2
+    # APPLIED ELECTRIC FIELD
+    s.Fapp = 0e4 # (V/m)
+    # For 1D, z-axis is choosen
+    s.gridfactor = 0.05#nm
+    # REGIONS
+    # Region input is a two-dimensional list input like AESTIMO(https://www.aestimosolver.org/) .
+    #         | Thickness (nm) | Material | Alloy fraction | Doping(cm^-3) | n or p type |
+    s.material =[
+
+                [ 30.0, 'AlGaAs',   0.15,   0, 'n','Barrier'],
+                [ 11.87,'GaAs'  ,      0,   0, 'n','Well'],
+                [ 1.98, 'AlGaAs',   0.15,   0, 'n','Barrier'],
+                [ 13.85,'GaAs'  ,      0,   0, 'n','Well'],
+                [ 30.0, 'AlGaAs',   0.15,   0, 'n','Barrier'],
+                ]
+
+    structure = s
+    nm = 1e-9
+    # RUN SIMULATION
+    model = solver.StructureFrom(structure) #
+    xaxis=model.xaxis/nm
+    cb=model.cb
+    vb=model.vb
+    results=solver.Solver(model).QuantumSolutions(absolute =True,Print=True)
+    solver.Solver(model).plotting(results,amp=10,axmin=30,axmax=30,eymin =-0.01,eymax=0.01,hymin=-0.2,hymax=-2,save=False)
+  
+
+
+.. image:: examples/example.png
+    :alt: Results 
+    :width: 300px
+    :height: 200px
+    :align: right
+
