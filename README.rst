@@ -1,6 +1,8 @@
 CQWS CODES
 ==========
-En este repositorio, compartimos los códigos utilizados para calcular los pozos cuánticos acoplados (CQWs) implementados en el proyecto de doctorado de O. Ruiz-Cigarrillo, en colaboración con C.A. Bravo-Velázquez y G.A. Martínez-Zepeda. Estos códigos están siendo desarrollados continuamente por el grupo del `Prof. Dr. A. Lastras-Martínez <https://scholar.google.com.mx/citations?user=D7IB_lIAAAAJ&hl=en&oi=ao>`_ y la `Dra. L.E. Guevara-Macías <https://scholar.google.es/citations?user=BDxMfXYAAAAJ&hl=es&oi=ao>`_ a través de la estudiante `C. Hernández-Juache <https://github.com/orgs/NanophotonIICOs/people/Citlali-Juache>`_. La primera versión se refiere a la implementación inicial, mientras que la segunda versión se desarrolló con la incorporación del código `AESTIMO <https://www.aestimosolver.org/>`_ y `SOLCORE <https://www.solcore.solar/>`_. El objetivo de este repositorio es mejorar los códigos utilizados para cálculos numéricos en estructuras CQWs y pozos cuánticos con potencial arbitrario.
+.. container:: justify
+
+    En este repositorio, compartimos los códigos utilizados para calcular los pozos cuánticos acoplados (CQWs) implementados en el proyecto de doctorado de O. Ruiz-Cigarrillo, en colaboración con C.A. Bravo-Velázquez y G.A. Martínez-Zepeda. Estos códigos están siendo desarrollados continuamente por el grupo del `Prof. Dr. A. Lastras-Martínez <https://scholar.google.com.mx/citations?user=D7IB_lIAAAAJ&hl=en&oi=ao>`_ y la `Dra. L.E. Guevara-Macías <https://scholar.google.es/citations?user=BDxMfXYAAAAJ&hl=es&oi=ao>`_ a través de la estudiante `C. Hernández-Juache <https://github.com/orgs/NanophotonIICOs/people/Citlali-Juache>`_. La primera versión se refiere a la implementación inicial, mientras que la segunda versión se desarrolló con la incorporación del código `AESTIMO <https://www.aestimosolver.org/>`_ y `SOLCORE <https://www.solcore.solar/>`_. El objetivo de este repositorio es mejorar los códigos utilizados para cálculos numéricos en estructuras CQWs y pozos cuánticos con potencial arbitrario.
 
 Installation
 ------------
@@ -72,5 +74,8 @@ The module needs to declare like a structure as a next example (like a `AESTIMO 
     :alt: Results 
     :width: 300px
     :height: 200px
-    :align: right
+    :scale: 150%
+    :align: left
+
+
 
