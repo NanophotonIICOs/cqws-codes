@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'numpy',
         'scipy',
-        'matplotlib',
+        'matplotlib',ls
         'tqdm',
         'numba',
         'scipy',
@@ -24,6 +24,7 @@ setup(
         'astropy',
         'lumispy',
         'specutils',
-        'peakutils'
+        'peakutils',
+        'sphinx'
     ],
 )
