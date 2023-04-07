@@ -25,7 +25,9 @@ setup(
         'lumispy',
         'specutils',
         'peakutils',
-        'sphinx',
-        'streamlit'
+        'Sphinx',
+        'streamlit',
+        'julia',
+        'sentry',
     ],
 )
