@@ -1,6 +1,18 @@
 CQWS CODES
 ==========
-.. container:: justify
+.. raw:: html
+
+   <style>
+      .full-width {
+         max-width: 100%;
+         text-align: justify;
+         word-spacing: 1px;
+      }
+   </style>
+
+.. container:: full-width
+
+
 
     In this repository, we share the codes used to calculate Coupled Quantum Wells (CQWs) as implemented in the PhD project of O. Ruiz-Cigarrillo, in collaboration with C.A. Bravo-Velazquez and G.A. Martinez-Zepeda. These codes are continuously being developed by the group of [Prof. Dr. A. Lastras-Martinez](https://scholar.google.com.mx/citations?user=D7IB_lIAAAAJ&hl=en&oi=ao) and [Dra. L.E. Guevara-Macias](https://scholar.google.es/citations?user=BDxMfXYAAAAJ&hl=es&oi=ao) through student [C. Hernández-Juache](https://github.com/orgs/NanophotonIICOs/people/Citlali-Juache). The first version refers to the initial implementation, while the second version was developed with the incorporation of [AESTIMO](https://www.aestimosolver.org/) code and [SOLCORE](https://www.solcore.solar/). The objective of this repository is to enhance the codes used for numerical calculations in CQW structures and Quantum Wells with arbitrary potential.
 
