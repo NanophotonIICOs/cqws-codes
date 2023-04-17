@@ -111,7 +111,7 @@ class StructureFrom(Structure):
         # Loading material list
         self.material = inputfile.material  # type: ignore
         totallayer = alen(self.material)
-        print("Total layer number: %d" %(totallayer))
+        #print("Total layer number: %d" %(totallayer))
         # Calculate the required number of grid points
         self.x_max = sum([layer[0] for layer in self.material])*1e-9 #total thickness (m)
         self.n_max = int(self.x_max/self.dx)
@@ -216,20 +216,20 @@ class StructureFrom(Structure):
                 vbhh_meff[startindex:finishindex] = m_e
                 
                 
-            if layer[4] == 'n':  
-                chargedensity = layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
-            elif layer[4] == 'p': 
-                chargedensity = -layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
-            else:
-                chargedensity = 0.0
+            # if layer[4] == 'n':  
+            #     chargedensity = layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
+            # elif layer[4] == 'p': 
+            #     chargedensity = -layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
+            # else:
+            #     chargedensity = 0.0
             
-            self.dop[startindex:finishindex] = chargedensity
+            # self.dop[startindex:finishindex] = chargedensity
         
         self.count_layer=0
         for layer in self.material:
-            if layer[5]=='well':
+            if layer[3]=='well':
                 self.count_layer+=layer[0]
-            elif layer[5]=='cbarrier':
+            elif layer[3]=='cbarrier':
                 self.count_layer+=layer[0]
 
 
