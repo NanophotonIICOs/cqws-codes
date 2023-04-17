@@ -1,0 +1,16 @@
+[server]
+headless = true
+port = 7642
+
+[theme]
+base="light"
+primaryColor="#0087bd"
+backgroundColor="#f5f5f5"
+secondaryBackgroundColor="#ffffff"
+textColor="#262730"
+font="serif"
+
+[deprecation]
+showPyplotGlobalUse = false
+
+

@@ -5,16 +5,22 @@ from app_plots.plots import Plots
 
 
 
-st.set_page_config(page_title="Solution of 1D Schrodinger equation in Quantum Wells",layout="wide")
-st.title("Solution of 1D Schrodinger equation in III-V Quantum Wells")
+st.set_page_config(page_title="Solution of 1D Schrodinger equation in Quantum Wells",
+                   layout="wide",
+                    page_icon='icons/logo_iico_azul.png')
+
+col1, col2 = st.columns([3, 1]) # specify the width ratios of the columns
+with col1:
+    st.title(":blue[Solution of 1D Schrodinger equation in III-V Quantum Wells]")
+with col2:
+    st.image('icons/logo_iico_azul.png',)
+
 st.write("")
 st.markdown(
     """
    
 """
 )
-
-
 
 with st.expander("About this app"):
 
@@ -37,8 +43,7 @@ with st.expander("About this app"):
     st.write("")
     
     
-colsp = st.columns(2)
-
+colsp = st.columns((1,1.5))
 
 structure = Structure()
 with colsp[0]:
@@ -50,13 +55,13 @@ with colsp[0]:
             layers=structure.table_layers()
 
 with colsp[1]:    
-    with st.expander("Structure profile"):
+    # with st.expander("Results of the structure profile and its wave functions"):
         model = model(structure)
         Plots(model,structure).plot_profile()
-    with st.expander("Run Calculation"):
-        if st.button('Run'):
+        if st.button('Run',use_container_width=True):
             calc = calculation(model)
             Plots(model,structure).plot_calculations(calc)
+        
         
         
     
@@ -66,4 +71,3 @@ with colsp[1]:
     
 
     
-

@@ -28,6 +28,6 @@ setup(
         'Sphinx',
         'streamlit',
         'julia',
-        'sentry',
+        'plotly==5.14.1'
     ],
 )
