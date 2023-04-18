@@ -1,7 +1,8 @@
 import os
 import streamlit as st
-from app_utils.structure import Structure,model,calculation
+from app_utils.structure import Structure,model,calculation,energies
 from app_plots.plots import Plots
+import cqws.solver_qws as solver
 
 
 
@@ -13,7 +14,7 @@ col1, col2 = st.columns([3, 1]) # specify the width ratios of the columns
 with col1:
     st.title(":blue[Solution of 1D Schrodinger equation in III-V Quantum Wells]")
 with col2:
-    st.image('icons/logo_iico_azul.png',)
+    st.image('icons/logo_iico_azul.png',use_column_width=True)
 
 st.write("")
 st.markdown(
@@ -52,7 +53,7 @@ with colsp[0]:
         NoQws = st.number_input("Number of Layers",value=3, min_value=3, max_value=13)
         layerss = structure.structure_layers(NoQws)
         with st.expander("Table of total layers"):
-            layers=structure.table_layers()
+            table_layers=structure.table_layers()
 
 with colsp[1]:    
     # with st.expander("Results of the structure profile and its wave functions"):
@@ -61,6 +62,11 @@ with colsp[1]:
         if st.button('Run',use_container_width=True):
             calc = calculation(model)
             Plots(model,structure).plot_calculations(calc)
+            with st.expander("Table of Total Subband Energies"):
+                table_energies=energies(calc)
+                st.dataframe(table_energies,use_container_width=True)
+            
+            
         
         
         
