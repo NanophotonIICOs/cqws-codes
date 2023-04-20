@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from app_utils.structure import Structure,model,calculation,energies
+from app_utils.structure import Structure,model,calculation,energies,down_results
 from app_plots.plots import Plots
 import cqws.solver_qws as solver
 
@@ -54,7 +54,7 @@ with colsp[0]:
         layerss = structure.structure_layers(NoQws)
         with st.expander("Table of total layers"):
             table_layers=structure.table_layers()
-
+            
 with colsp[1]:    
     # with st.expander("Results of the structure profile and its wave functions"):
         model = model(structure)
@@ -65,11 +65,34 @@ with colsp[1]:
             with st.expander("Table of Total Subband Energies"):
                 table_energies=energies(calc)
                 st.dataframe(table_energies,use_container_width=True)
+                down_results = down_results(calc)
+                subcol1,subcol2,subcol3,subcol4= st.columns(4)
+                with subcol1:
+                    st.download_button(
+                        label="Download data as CSV",
+                        data=table_energies.to_csv().encode('utf-8'),
+                        file_name='energies.csv',
+                        mime='text/csv',
+                    )
+                with subcol2:
+                    st.download_button( label="Download E-WF as CSV",
+                        data=down_results.dfen,
+                        file_name='Electron_wf.csv',
+                        mime='text/csv',)
+                with subcol3:
+                    st.download_button( label="Download HH-WF as CSV",
+                        data=down_results.dfhh,
+                        file_name='Heavy-Hole_wf.csv',
+                        mime='text/csv',)
+                with subcol4:
+                    st.download_button( label="Download LH-WF as CSV",
+                        data=down_results.dfhh,
+                        file_name='Light-Hole_wf.csv',
+                        mime='text/csv',)
+                
+                
+                
             
-            
-        
-        
-        
     
 # with colsp[0]:    
 #     with st.expander("Table of total layers"):
