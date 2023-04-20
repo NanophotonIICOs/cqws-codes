@@ -815,4 +815,3 @@ class Solver:
             ax22.plot((1 - d, 1 + 0), (1 - 0, 1 + 0), **kwargs)  # bottom-right diagonal
             
             plt.show()
-            

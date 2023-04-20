@@ -1,8 +1,22 @@
 import numpy as np
-import cqws.solver_qws as solver
-from cqws.tools import plotstyle
 import streamlit as st
 import pandas as pd
+import cqws.solver_qws as solver
+from collections import namedtuple
+#Defining constants and material parameters
+q    = 1.602176e-19 #C
+kBe  = 8.6173303e-5 # eV / K
+kb   = 1.3806504e-23 #J/K
+kbe  = 8.6173324e-5 #eV/K
+nii  = 0.0
+hbar = 1.054588757e-34
+m_e  = 9.1093826E-31 #kg
+pi   = np.pi
+eps0 = 8.8541878176e-12 #F/m
+nm=1e-9
+J2eV=1/q #Joules to eV
+eV2J=1*q #eV to Joules
+
 
 
 def layer(layer_index):
@@ -15,7 +29,7 @@ def layer(layer_index):
         layer_type = st.radio("Layer type",("Barrier","QW"), key=f"type_{layer_index}")
         if layer_material=="AlGaAs":
             with cols[3]:
-                x = st.number_input("Al concentration",value=0.15, min_value=0.1, max_value=0.4,step=0.01, key=f"al_concentration_{layer_index}")
+                x = st.number_input("Al concentration",value=0.15, min_value=0.1, max_value=0.5,step=0.01, key=f"al_concentration_{layer_index}")
         else:
             x=0
     return [layer_width,layer_material,x,layer_type]
@@ -65,6 +79,7 @@ class Structure:
          
     def structure_layers(self,NoLayers):
         self.total_layers= create_structure(NoLayers)
+        return self.total_layers
         
     def parameters(self):
         
@@ -84,7 +99,7 @@ class Structure:
         with colp1:
             self.subbands = st.number_input("No. of calculate subbands",min_value=1,max_value=10,value=1)
         with colp2:
-            self.grid_factor = st.number_input(r"$\Delta z$ (nm)",min_value=0.01,max_value=1.00,value=0.1,step=0.1)
+            self.grid_factor = st.number_input(r"$\Delta z$ (nm)",min_value=0.1,max_value=1.00,value=0.1,step=0.1)
         st.markdown("Ground Bound Exciton Parameters")
         colb1,colb2=st.columns(2)
         with colb1:
@@ -115,7 +130,46 @@ def model(structure):
     model_return = solver.StructureFrom(s)
     return model_return
 
-def calculation(model):
-    Structure = model
-    results   = solver.Solver(model).QuantumSolutions(absolute =True,Print=False)
+def calculation(model):    
+    results = solver.Solver(model).QuantumSolutions(absolute =True,Print=False)
     return results
+
+
+def energies(results):
+    eigen = results.Energies.T
+    dfen  = pd.DataFrame(eigen,columns=["Electron (eV)","Heavy-Hole (eV)","Light-Hole (eV)"])
+    return dfen.round(6)
+
+def down_results(results):
+    down = namedtuple('down',['dfen','dfhh','dflh'])
+    
+    en = results.psie
+    hh = results.psihh
+    lh = results.psilh
+    xaxis = results.xaxis/nm
+    cb =     results.cb
+    vb =  results.vb
+    subbands =  results.subbands
+    ene_array = np.zeros((len(xaxis),3+subbands))
+    enhh_array = enlh_array = ene_array
+    ene_array[:,0] = enhh_array[:,0] = enlh_array[:,0] = xaxis
+    ene_array[:,1] = enhh_array[:,1] = enlh_array[:,1] =  cb
+    ene_array[:,2] = enhh_array[:,2] = enlh_array[:,2] = vb
+    head_principal = ['z','cb','vb']
+    for i in range(subbands):
+        ene_array[:,i+3]=en[:,i]
+        enhh_array[:,i+3]=hh[:,i]
+        enlh_array[:,i+3]=lh[:,i]
+
+    heade  = ['z','cb','vb']
+    headhh = ['z','cb','vb']
+    headlh = ['z','cb','vb']
+    for i in range(subbands):
+        heade.append(f"psie-{i}")
+        headhh.append(f"psihh-{i}")
+        headlh.append(f"psilh-{i}")
+    dfen = pd.DataFrame(ene_array,columns=heade).to_csv()
+    dfhh = pd.DataFrame(enhh_array,columns=headhh).to_csv()
+    dflh = pd.DataFrame(enlh_array,columns=headlh).to_csv()
+    
+    return down(dfen,dfhh,dflh)
