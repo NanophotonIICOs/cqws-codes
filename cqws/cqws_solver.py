@@ -61,7 +61,7 @@ def round2int(x):
     return int(x+0.5)
 
 
-class Structure():
+class Structure:
     def __init__(self,T,Fapp,dx,subbands,  #parameters
                   Vc,eps,dop,cb_meff, #arrays
                  **kwargs):
@@ -75,11 +75,11 @@ class Structure():
         self.dop         = dop
         self.cb_meff     = cb_meff
         self.subbands    = subbands
-        self.scheme      = scheme
-        self.HHBinding   = HHBinding
-        self.LHBinding   = LHBinding
-        self.Qc          = Qc
-        self.Qv          = Qv
+        # self.scheme      = scheme
+        # self.HHBinding   = HHBinding
+        # self.LHBinding   = LHBinding
+        # self.Qc          = Qc
+        # self.Qv          = Qv
 
         # setting any extra parameters provided with initialisation
         for key,value in kwargs.items():
@@ -91,13 +91,11 @@ class AttrDict(dict):
     def __init__(self, *args, **kwargs):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
-
-
     
 class StructureFrom(Structure):
     def __init__(self,inputfile):
         if type(inputfile)==dict:
-            inputfile=AttrDict(inputfile,database)            
+            inputfile=AttrDict(inputfile)            
         # Parameters for simulation
         self.Fapp     = inputfile.Fapp
         self.T        = inputfile.T
@@ -203,14 +201,14 @@ class StructureFrom(Structure):
                 vbhh_meff[startindex:finishindex] = m_e
                 
                 
-            if layer[4] == 'n':  
-                chargedensity = layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
-            elif layer[4] == 'p': 
-                chargedensity = -layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
-            else:
-                chargedensity = 0.0
+            # if layer[4] == 'n':  
+            #     chargedensity = layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
+            # elif layer[4] == 'p': 
+            #     chargedensity = -layer[3]*1e6 #charge density in m**-3 (conversion from cm**-3)
+            # else:
+            #     chargedensity = 0.0
             
-            dop[startindex:finishindex] = chargedensity
+            #dop[startindex:finishindex] = chargedensity
         
         self.CB         = CB
         self.VB         = VB
