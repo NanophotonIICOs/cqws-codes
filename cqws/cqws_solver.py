@@ -524,9 +524,7 @@ class Solver:
                      self.DirectTransitions.append(["E%d->HH%d :" %(i+1,i+1), " %.4f"%(self.EHH[i])])
                      self.DirectTransitions.append(["E%d->LH%d :" %(i+1,i+1), " %.4f"%(self.ELH[i])])
 
-                
-        
-            
+
             #self.TotalT = np.vstack((self.EHH,self.ELH))
             self.energies = np.vstack((self.Ee,self.Ehh,self.Elh))      
             self.eprinte = np.zeros((self.subbands,3),dtype = object)
